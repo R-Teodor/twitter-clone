@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 
 const TrendsForYou = () => {
   const [searchInput, setSearchInput] = useState('')
@@ -45,10 +46,16 @@ const TrendsForYou = () => {
         <div className=' peer-focus:block peer-focus-visible:block peer-active:block focus:block'>
           {searchData?.map((user) => {
             return (
-              <div className='text-3xl flex gap-2' key={user._id}>
-                {user?.name}
-                <button onClick={() => handleFollow(user._id)}>Follow</button>
-              </div>
+              <Link
+                to={`/${user.name}`}
+                key={user._id}
+                state={{ _id: user._id }}
+              >
+                <div className='text-3xl flex gap-2'>
+                  {user?.name}
+                  {/* <button onClick={() => handleFollow(user._id)}>Follow</button> */}
+                </div>
+              </Link>
             )
           })}
         </div>

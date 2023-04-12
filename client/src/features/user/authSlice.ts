@@ -1,6 +1,27 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 
+// THIS IS ALMOST THE FINAL STATE OF USER MODEL
+// ############## SHOULD TRY TO IMPLEMENT AN INTERFACE OR A TYPE AND USE IT FOR THE WHOLE APPLICATION
+// ############## START DEFINING THE TYPE FOR ALL PURPOSE IN THE APP
+
+export type User = {
+  _id: string
+  name: string
+  email: string
+  phone: number
+  userTag: string
+  following: User[] | string[]
+  followingCount: number
+  followers: User[] | string[]
+  followersCount: number
+  birthDate: string
+  bio?: string
+  location?: string
+  website?: string
+  createdAt: string
+}
+
 export type Returned = {
   user: object
 }

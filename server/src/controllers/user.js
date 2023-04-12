@@ -102,6 +102,22 @@ function getAggregateSearchConfig(query) {
   return aggConfig
 }
 
+const getUserProfile = async (req, res) => {
+  const { _id } = req.body
+
+  const user = await User.findById(_id).select('-password -__v -updatedAt')
+
+  const returnedUser = {
+    ...user.toJSON(),
+    followingCount: user.following.length,
+    followersCount: user.followers.length,
+  }
+
+  if (!user) throw new BadRequest('No User with the id')
+
+  res.status(200).json({ user: returnedUser })
+}
+
 const followUser = async (req, res) => {
   const userId = req.userId
   const { followId } = req.body
@@ -132,4 +148,5 @@ module.exports = {
   searchAsTyped,
   testIndex,
   followUser,
+  getUserProfile,
 }

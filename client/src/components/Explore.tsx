@@ -11,7 +11,7 @@ import {
 } from '../features/user/authSlice'
 
 const req: UserFormState = {
-  email: '',
+  email: 'teodor@gmail.com',
   password: 'secret1234',
 }
 

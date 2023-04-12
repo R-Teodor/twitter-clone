@@ -1,17 +1,42 @@
-import { useParams } from 'react-router-dom'
+import { useParams, useLocation } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import type { User } from '../features/user/authSlice'
 
 const Profile = () => {
+  const [user, setUser] = useState<User | null>(null)
   const { userTag } = useParams()
+  const { state } = useLocation()
+
   let letter: string = 'P'
 
   if (userTag) letter = userTag[0].toUpperCase()
+
+  useEffect(() => {
+    const getProfile = async (query: object) => {
+      const response = await fetch(
+        'http://localhost:4000/api/v1/user/profile',
+        {
+          method: 'POST',
+          body: JSON.stringify(query),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+        }
+      )
+      const data: { user: User } = await response.json()
+      console.log('This is the Returned Data: ', data)
+      setUser(data.user)
+    }
+    getProfile(state)
+  }, [state])
 
   return (
     <>
       <div className='flex flex-col w-[600px]'>
         <div>
           <span className='text-3xl mr-3'>&#x2190;</span>
-          <span className='text-xl font-bold'>User Informatione</span>
+          <span className='text-xl font-bold'>{user?.name}</span>
           <p className='text-sm'>0 Tweets</p>
         </div>
         <div className='w-[598px] h-[199px] bg-gray-500'></div>
@@ -32,11 +57,12 @@ const Profile = () => {
             </button>
           </div>
           <div className='pt-10'>
-            <p>User information</p>
-            <p>User tag</p>
-            <p>CreatedAt</p>
+            <p>{user?.name}</p>
+            <p>{user?.userTag ? user.userTag : 'User Tag'}</p>
+            <p>{user?.createdAt}</p>
             <p>
-              <span>0 Followers</span> <span>0 Following</span>
+              <span>{user?.followersCount} Followers</span>{' '}
+              <span>{user?.followingCount} Following</span>
             </p>
           </div>
 
