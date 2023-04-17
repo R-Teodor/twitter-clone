@@ -3,7 +3,7 @@ const ErrorHandler = (err, req, res, next) => {
     msg: err.message || 'INTERNAL ERROR',
     statusCode: err.statusCode || 500,
   }
-  res.status(errorObject.statusCode).json({ msg: errorObject.msg })
+  res.status(errorObject.statusCode).json({ data: errorObject.msg })
   // res.status(err.statusCode).json({ msg: err.message })
 }
 

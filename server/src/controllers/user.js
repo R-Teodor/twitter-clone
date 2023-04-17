@@ -104,8 +104,9 @@ function getAggregateSearchConfig(query) {
 
 const getUserProfile = async (req, res) => {
   const { _id } = req.body
+  const id = req.params.id
 
-  const user = await User.findById(_id).select('-password -__v -updatedAt')
+  const user = await User.findById(id).select('-password -__v -updatedAt')
 
   const returnedUser = {
     ...user.toJSON(),

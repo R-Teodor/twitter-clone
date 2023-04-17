@@ -1,13 +1,18 @@
 import { useParams, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import type { User } from '../features/user/authSlice'
+import { RootState } from '../app/store'
 
 const Profile = () => {
   const [user, setUser] = useState<User | null>(null)
   const { userTag } = useParams()
   const { state } = useLocation()
+  const userDetails = useSelector((state: RootState) => state.auth)
+  console.log(userDetails)
 
   let letter: string = 'P'
+  console.log(state?._id)
 
   if (userTag) letter = userTag[0].toUpperCase()
 
@@ -28,7 +33,21 @@ const Profile = () => {
       console.log('This is the Returned Data: ', data)
       setUser(data.user)
     }
-    getProfile(state)
+    const getQueryProfile = async (_id: string) => {
+      const response = await fetch(`http://localhost:4000/api/v1/user/${_id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      })
+
+      const data = await response.json()
+      console.log(data)
+    }
+
+    // getProfile(state)
+    getQueryProfile(state?._id)
   }, [state])
 
   return (

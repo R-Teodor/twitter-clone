@@ -1,18 +1,17 @@
 const User = require('../models/user')
 const { BadRequest, Unauthorized } = require('../errors')
 
-
 const login = async (req, res) => {
   const { email, phone, password } = req.body
 
   if (!email && !password) {
     throw new Unauthorized('Invalid Credentials')
   }
-  const user = await User.findOne({ email })
+  const user = await User.findOne({ email }).select('-__v -updatedAt')
 
   if (!user) throw new BadRequest('Invalid Credentials')
   const isMatch = await user.comparePassword(password)
-  console.log(isMatch)
+
   if (!isMatch) {
     throw new Unauthorized('Invalid Credentials')
   }
@@ -22,8 +21,16 @@ const login = async (req, res) => {
     expires: new Date(Date.now() + 900000),
     httpOnly: true,
   })
+  // const newUser = Object.keys(user).filter((key) => key !== 'password').reduce((obj,key) =>{
 
-  res.json({ user })
+  // })
+
+  if (user._doc) {
+    const { password, ...responseObject } = user._doc
+    return res.status(200).json({ user: responseObject })
+  }
+
+  res.status(200).json({ user })
 }
 
 const register = async (req, res) => {
@@ -46,14 +53,13 @@ const getUsers = async (req, res) => {
 }
 
 const getUser = async (req, res) => {
+  console.log(req.userId)
   const user = await User.findOne({ _id: req.userId })
   // console.log(user)
   if (!user) throw new Unauthorized('Not Authorized')
 
   res.json({ user })
 }
-
-
 
 module.exports = {
   login,
