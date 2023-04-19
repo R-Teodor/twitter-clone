@@ -11,6 +11,8 @@ import {
 } from 'react-icons/ri'
 import { TbDotsCircleHorizontal } from 'react-icons/tb'
 import { FaFeather } from 'react-icons/fa'
+import { useSelector } from 'react-redux'
+import { RootState } from '../app/store'
 
 type NavProps = {
   isActive: boolean
@@ -21,6 +23,7 @@ type StylingStyles = {
 }
 
 const SidebarHeader = () => {
+  const userTag = useSelector((state: RootState) => state.auth.userTag)
   const activeLink: StylingStyles = {
     className: 'font-bold cursor-pointer    ',
   }
@@ -132,7 +135,7 @@ const SidebarHeader = () => {
           </div>
         </NavLink>
         <NavLink
-          to={'profile'}
+          to={userTag ? `/${userTag}` : 'profile'}
           className={({ isActive }: NavProps) =>
             isActive ? activeLink.className : nonActiveLink.className
           }

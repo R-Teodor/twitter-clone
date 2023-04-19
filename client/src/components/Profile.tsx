@@ -5,16 +5,37 @@ import type { User } from '../features/user/authSlice'
 import { RootState } from '../app/store'
 
 const Profile = () => {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<(User & { isFollowing: boolean }) | null>(
+    null
+  )
   const { userTag } = useParams()
-  const { state } = useLocation()
+  // const { state } = useLocation()
   const userDetails = useSelector((state: RootState) => state.auth)
   console.log(userDetails)
 
   let letter: string = 'P'
-  console.log(state?._id)
+  // console.log(state?._id)
 
   if (userTag) letter = userTag[0].toUpperCase()
+
+  const handleFollow = async (followId: string | undefined) => {
+    if (!followId) return
+    if (!user?.isFollowing) {
+      const response = await fetch('http://localhost:4000/api/v1/user/follow', {
+        method: 'POST',
+        body: JSON.stringify({ followId }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      })
+      const data = await response.json()
+      console.log(data)
+      return
+    }
+    // ### Unfollow Logic after some backed refactoring
+    console.log('Unfollow boii')
+  }
 
   useEffect(() => {
     const getProfile = async (query: object) => {
@@ -29,7 +50,8 @@ const Profile = () => {
           credentials: 'include',
         }
       )
-      const data: { user: User } = await response.json()
+      const data: { user: User & { isFollowing: boolean } } =
+        await response.json()
       console.log('This is the Returned Data: ', data)
       setUser(data.user)
     }
@@ -43,12 +65,13 @@ const Profile = () => {
       })
 
       const data = await response.json()
+      setUser(data.user)
       console.log(data)
     }
 
     // getProfile(state)
-    getQueryProfile(state?._id)
-  }, [state])
+    if (userTag) getQueryProfile(userTag)
+  }, [userTag])
 
   return (
     <>
@@ -71,8 +94,11 @@ const Profile = () => {
             />
           </div>
           <div className='flex justify-end pt-3 px-3'>
-            <button className='py-1 px-5 font-bold border-[1px] border-slate-500 border-opacity-40 rounded-full'>
-              Edit profile
+            <button
+              className='py-1 px-5 font-bold border-[1px] border-slate-500 border-opacity-40 rounded-full'
+              onClick={() => handleFollow(user?._id)}
+            >
+              {user?.isFollowing ? 'Unfollow' : 'Follow'}
             </button>
           </div>
           <div className='pt-10'>

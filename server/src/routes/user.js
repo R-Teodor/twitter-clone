@@ -11,6 +11,6 @@ const {
 router.route('/search').post(searchAsTyped).get(testIndex)
 router.route('/follow').post(authMiddleware, followUser)
 router.route('/profile').post(getUserProfile)
-router.route('/:id').get(getUserProfile)
+router.route('/:userTag').get(getUserProfile)
 
 module.exports = router

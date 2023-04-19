@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema(
     },
     userTag: {
       type: String,
-      unique:true
+      unique: true,
     },
     following: {
       type: [mongoose.Types.ObjectId],
@@ -79,7 +79,7 @@ userSchema.methods.comparePassword = async function (candidatePass) {
 }
 
 userSchema.index({
-  'name': 'text',
+  name: 'text',
 })
 
 const User = mongoose.model('User', userSchema)

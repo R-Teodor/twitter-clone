@@ -1,12 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import type { User } from '../features/user/authSlice'
 
 const TrendsForYou = () => {
   const [searchInput, setSearchInput] = useState('')
-  const [searchData, setSearchData] = useState<any[]>([])
-  const [toggleDropdownMenu, setToggleDropdownMenu] = useState(true)
+  const [searchData, setSearchData] = useState<
+    Pick<User, '_id' | 'email' | 'name' | 'userTag'>[]
+  >([])
+  const [toggleDropdownMenu, setToggleDropdownMenu] = useState(false)
+  const dropDownRef = useRef<HTMLDivElement>(null)
 
   const handleSearch = async (query: string) => {
+    if (!query) return setSearchData([])
     const response = await fetch('http://localhost:4000/api/v1/user/search', {
       method: 'POST',
       body: JSON.stringify({ query: query }),
@@ -20,18 +25,6 @@ const TrendsForYou = () => {
     setSearchData(data.results)
   }
 
-  const handleFollow = async (followId: string) => {
-    const response = await fetch('http://localhost:4000/api/v1/user/follow', {
-      method: 'POST',
-      body: JSON.stringify({ followId }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    })
-    const data = await response.json()
-    console.log(data)
-  }
   const debounce = () => {
     let timeoutID: ReturnType<typeof setTimeout>
     return (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,10 +37,30 @@ const TrendsForYou = () => {
   }
   const optimizedDebounce = useMemo(() => debounce(), [])
 
+  useEffect(() => {
+    const handleClick = (event: MouseEvent) => {
+      if (
+        dropDownRef.current &&
+        !dropDownRef.current.contains(event.target as Node)
+      ) {
+        console.log(dropDownRef.current)
+        setToggleDropdownMenu(true)
+      }
+    }
+
+    document.addEventListener('click', handleClick)
+    return () => {
+      removeEventListener('click', handleClick)
+    }
+  }, [])
+
   return (
     <div className='flex flex-col'>
       <div className='h-14'>
-        <div className='fixed top-2  bg-black'>
+        <div
+          className='fixed top-2  bg-black border-2 border-red-600'
+          ref={dropDownRef}
+        >
           <input
             type='search'
             name=''
@@ -56,21 +69,22 @@ const TrendsForYou = () => {
             value={searchInput}
             onChange={optimizedDebounce}
             onFocus={() => setToggleDropdownMenu(false)}
-            onBlur={() => setToggleDropdownMenu(true)}
+            // onBlur={() => setToggleDropdownMenu(true)}
           />
 
-          <div hidden={false}>
+          <div hidden={toggleDropdownMenu}>
             {searchInput ? searchInput : 'Try searching for etc..'}
             {searchData?.map((user) => {
               return (
                 <Link
-                  to={`/${user.name}`}
+                  to={`/${user.userTag}`}
                   key={user._id}
                   state={{ _id: user._id }}
                 >
                   <div className='text-3xl flex gap-2'>
-                    {user?.name}
+                    <p>{user?.name}</p>
                     {/* <button onClick={() => handleFollow(user._id)}>Follow</button> */}
+                    <p>{user?.userTag}</p>
                   </div>
                 </Link>
               )
