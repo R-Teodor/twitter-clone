@@ -11,7 +11,7 @@ const Profile = () => {
   const { userTag } = useParams()
   // const { state } = useLocation()
   const userDetails = useSelector((state: RootState) => state.auth)
-  console.log(userDetails)
+  // console.log(userDetails)
 
   let letter: string = 'P'
   // console.log(state?._id)

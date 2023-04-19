@@ -78,7 +78,7 @@ export const login = createAsyncThunk(
         user,
         { withCredentials: true }
       )
-      return data
+      return data.user
     } catch (error: any) {
       // ##### Need to implement type errors for network errors or TypeErro
       console.log(error)
@@ -132,19 +132,26 @@ export const authSlice = createSlice({
     builder.addCase(login.fulfilled, (state, action) => {
       return {
         ...state,
-        ...action.payload.user,
+        ...action.payload,
       }
     }),
       builder.addCase(login.rejected, (state, action) => {
         console.log(action.payload)
 
         state.error = action.error.message
+      }),
+      builder.addCase(checkLoginState.pending, (state, action) => {
+        state.loading = 'loading'
+      }),
+      builder.addCase(checkLoginState.fulfilled, (state, action) => {
+        console.log(action.payload)
+        localStorage.setItem('id', action.payload.user?._id)
+        return {
+          ...state,
+          ...action.payload,
+          loading: 'idle',
+        }
       })
-    builder.addCase(checkLoginState.fulfilled, (state, action) => {
-      console.log(action.payload)
-      localStorage.setItem('id', action.payload.user?._id)
-      state = action.payload.user
-    })
   },
 })
 

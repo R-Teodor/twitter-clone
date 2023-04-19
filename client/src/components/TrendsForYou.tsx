@@ -7,7 +7,7 @@ const TrendsForYou = () => {
   const [searchData, setSearchData] = useState<
     Pick<User, '_id' | 'email' | 'name' | 'userTag'>[]
   >([])
-  const [toggleDropdownMenu, setToggleDropdownMenu] = useState(false)
+  const [toggleDropdownMenu, setToggleDropdownMenu] = useState(true)
   const dropDownRef = useRef<HTMLDivElement>(null)
 
   const handleSearch = async (query: string) => {
@@ -57,10 +57,7 @@ const TrendsForYou = () => {
   return (
     <div className='flex flex-col'>
       <div className='h-14'>
-        <div
-          className='fixed top-2  bg-black border-2 border-red-600'
-          ref={dropDownRef}
-        >
+        <div className='fixed top-2  bg-black border-2 ' ref={dropDownRef}>
           <input
             type='search'
             name=''

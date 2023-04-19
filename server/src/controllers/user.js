@@ -110,7 +110,7 @@ const getUserProfile = async (req, res) => {
   // #find a method to check if the person that makes the request is logged in and search the followers array to get the follow button to show or not in the frontend
   // #### partial auth middleware for extra permissions/features
   const token = req.cookies.token
-  let payload
+  let payload = null
   if (token) {
     payload = jwt.verify(token, process.env.JWT_SECRET)
   }
@@ -123,7 +123,7 @@ const getUserProfile = async (req, res) => {
   ).select('-password -__v -updatedAt')
 
   let verifyFollowing = []
-  if (payload.userId) {
+  if (payload && payload.userId) {
     verifyFollowing = await User.find({
       userTag: id,
       followers: payload.userId,

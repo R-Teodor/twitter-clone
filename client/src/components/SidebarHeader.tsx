@@ -11,8 +11,9 @@ import {
 } from 'react-icons/ri'
 import { TbDotsCircleHorizontal } from 'react-icons/tb'
 import { FaFeather } from 'react-icons/fa'
-import { useSelector } from 'react-redux'
-import { RootState } from '../app/store'
+import { useSelector, useDispatch } from 'react-redux'
+import { RootState, AppDispatch } from '../app/store'
+import { login } from '../features/user/authSlice'
 
 type NavProps = {
   isActive: boolean
@@ -21,9 +22,14 @@ type NavProps = {
 type StylingStyles = {
   className: string
 }
+type AppProps = {
+  userTag: string
+}
 
-const SidebarHeader = () => {
-  const userTag = useSelector((state: RootState) => state.auth.userTag)
+const SidebarHeader = ({ userTag }: AppProps) => {
+  // const userTag = useSelector((state: RootState) => state.auth.userTag)
+  const dispatch = useDispatch<AppDispatch>()
+
   const activeLink: StylingStyles = {
     className: 'font-bold cursor-pointer    ',
   }
@@ -33,21 +39,22 @@ const SidebarHeader = () => {
 
   const getCredentials = async () => {
     const req = {
-      email: '',
-      password: '',
+      email: 'teodor@gmail.com',
+      password: 'secret1234',
     }
+    dispatch(login(req))
 
-    fetch('http://localhost:4000/api/v1/auth/login', {
-      method: 'POST',
-      body: JSON.stringify(req),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    })
-      .then((res) => res.json())
-      .then((data) => console.log(data))
-      .catch((err) => console.error(err))
+    // fetch('http://localhost:4000/api/v1/auth/login', {
+    //   method: 'POST',
+    //   body: JSON.stringify(req),
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   credentials: 'include',
+    // })
+    //   .then((res) => res.json())
+    //   .then((data) => console.log(data))
+    //   .catch((err) => console.error(err))
   }
 
   return (
@@ -56,19 +63,21 @@ const SidebarHeader = () => {
         <NavLink to='/' className='font-bold cursor-pointer p-3'>
           <RiTwitterFill size={34} />
         </NavLink>
-        <NavLink
-          to='/'
-          className={({ isActive }: NavProps) =>
-            isActive ? activeLink.className : nonActiveLink.className
-          }
-        >
-          <div className='flex items-center gap-4 p-3 hover:bg-slate-700 rounded-full w-fit'>
-            <span>
-              <RiHome7Fill size={28} />
-            </span>
-            <span className='hidden xl:block'>Home</span>
-          </div>
-        </NavLink>
+        {userTag && (
+          <NavLink
+            to='/'
+            className={({ isActive }: NavProps) =>
+              isActive ? activeLink.className : nonActiveLink.className
+            }
+          >
+            <div className='flex items-center gap-4 p-3 hover:bg-slate-700 rounded-full w-fit'>
+              <span>
+                <RiHome7Fill size={28} />
+              </span>
+              <span className='hidden xl:block'>Home</span>
+            </div>
+          </NavLink>
+        )}
         <NavLink
           to='explore'
           className={({ isActive }: NavProps) =>
@@ -82,94 +91,111 @@ const SidebarHeader = () => {
             <span className='hidden xl:block'>Explore</span>
           </div>
         </NavLink>
-        <NavLink
-          to={'notifications'}
-          className={({ isActive }: NavProps) =>
-            isActive ? activeLink.className : nonActiveLink.className
-          }
-        >
-          <div className='flex gap-4 p-3 hover:bg-slate-700  rounded-full w-fit'>
-            <span>
-              <RiBellLine size={28} />
-            </span>
-            <span className='hidden xl:block'>Notifications</span>
-          </div>
-        </NavLink>
-        <NavLink
-          to={'messages'}
-          className={({ isActive }: NavProps) =>
-            isActive ? activeLink.className : nonActiveLink.className
-          }
-        >
-          <div className='flex gap-4 p-3 hover:bg-slate-700  rounded-full w-fit'>
-            <span className='overflow-hidden'>
-              <RiMessageLine size={28} />
-            </span>
-            <span className='hidden xl:block'>Messages</span>
-          </div>
-        </NavLink>
-        <NavLink
-          to={'bookmarks'}
-          className={({ isActive }: NavProps) =>
-            isActive ? activeLink.className : nonActiveLink.className
-          }
-        >
-          <div className='flex gap-4 p-3 hover:bg-slate-700  rounded-full w-fit'>
-            <span>
-              <RiBookmarkLine size={28} />
-            </span>
-            <span className='hidden xl:block'>BookMarks</span>
-          </div>
-        </NavLink>
-        <NavLink
-          to={'twitterBl'}
-          className={({ isActive }: NavProps) =>
-            isActive ? activeLink.className : nonActiveLink.className
-          }
-        >
-          <div className='flex gap-4 p-3 hover:bg-slate-700  rounded-full w-fit'>
-            <span>
-              <RiTwitterLine size={28} className='stroke' />
-            </span>
-            <span className='hidden xl:block'>Twitter Blue</span>
-          </div>
-        </NavLink>
-        <NavLink
-          to={userTag ? `/${userTag}` : 'profile'}
-          className={({ isActive }: NavProps) =>
-            isActive ? activeLink.className : nonActiveLink.className
-          }
-        >
-          <div className='flex gap-4 p-3 hover:bg-slate-700  rounded-full w-fit'>
-            <span>
-              <RiProfileLine size={28} />
-            </span>
-            <span className='hidden xl:block'>Profile</span>
-          </div>
-        </NavLink>
-        <NavLink to={'#'} className={nonActiveLink.className}>
-          <div className='flex gap-4 p-3 hover:bg-slate-700 rounded-full w-fit'>
-            <span>
-              <TbDotsCircleHorizontal size={28} />
-            </span>
-            <span className='hidden xl:block'>More</span>
-          </div>
-        </NavLink>
+
+        {userTag && (
+          <NavLink
+            to={'notifications'}
+            className={({ isActive }: NavProps) =>
+              isActive ? activeLink.className : nonActiveLink.className
+            }
+          >
+            <div className='flex gap-4 p-3 hover:bg-slate-700  rounded-full w-fit'>
+              <span>
+                <RiBellLine size={28} />
+              </span>
+              <span className='hidden xl:block'>Notifications</span>
+            </div>
+          </NavLink>
+        )}
+        {userTag && (
+          <NavLink
+            to={'messages'}
+            className={({ isActive }: NavProps) =>
+              isActive ? activeLink.className : nonActiveLink.className
+            }
+          >
+            <div className='flex gap-4 p-3 hover:bg-slate-700  rounded-full w-fit'>
+              <span className='overflow-hidden'>
+                <RiMessageLine size={28} />
+              </span>
+              <span className='hidden xl:block'>Messages</span>
+            </div>
+          </NavLink>
+        )}
+        {userTag && (
+          <NavLink
+            to={'bookmarks'}
+            className={({ isActive }: NavProps) =>
+              isActive ? activeLink.className : nonActiveLink.className
+            }
+          >
+            <div className='flex gap-4 p-3 hover:bg-slate-700  rounded-full w-fit'>
+              <span>
+                <RiBookmarkLine size={28} />
+              </span>
+              <span className='hidden xl:block'>BookMarks</span>
+            </div>
+          </NavLink>
+        )}
+        {userTag && (
+          <NavLink
+            to={'twitterBl'}
+            className={({ isActive }: NavProps) =>
+              isActive ? activeLink.className : nonActiveLink.className
+            }
+          >
+            <div className='flex gap-4 p-3 hover:bg-slate-700  rounded-full w-fit'>
+              <span>
+                <RiTwitterLine size={28} className='stroke' />
+              </span>
+              <span className='hidden xl:block'>Twitter Blue</span>
+            </div>
+          </NavLink>
+        )}
+        {userTag && (
+          <NavLink
+            to={userTag ? `/${userTag}` : 'profile'}
+            className={({ isActive }: NavProps) =>
+              isActive ? activeLink.className : nonActiveLink.className
+            }
+          >
+            <div className='flex gap-4 p-3 hover:bg-slate-700  rounded-full w-fit'>
+              <span>
+                <RiProfileLine size={28} />
+              </span>
+              <span className='hidden xl:block'>Profile</span>
+            </div>
+          </NavLink>
+        )}
+        {userTag && (
+          <NavLink to={'#'} className={nonActiveLink.className}>
+            <div className='flex gap-4 p-3 hover:bg-slate-700 rounded-full w-fit'>
+              <span>
+                <TbDotsCircleHorizontal size={28} />
+              </span>
+              <span className='hidden xl:block'>More</span>
+            </div>
+          </NavLink>
+        )}
 
         {/* <button className='font-bold cursor-pointer bg-[#1D9BF0]'>Tweet</button> */}
 
-        <a
-          href='#'
-          className=' xl:w-[90%] xl:rounded-3xl xl:py-3 xl:block hidden bg-[#1D9BF0] text-center font-bold text-lg rounded-full'
-        >
-          Tweet
-        </a>
-        <a
-          href='#'
-          className='xl:hidden bg-[#1D9BF0]  text-lg rounded-full w-[56px] h-[56px] flex justify-center items-center'
-        >
-          <FaFeather size={22} />
-        </a>
+        {userTag && (
+          <a
+            href='#'
+            className=' xl:w-[90%] xl:rounded-3xl xl:py-3 xl:block hidden bg-[#1D9BF0] text-center font-bold text-lg rounded-full'
+          >
+            Tweet
+          </a>
+        )}
+        {userTag && (
+          <a
+            href='#'
+            className='xl:hidden bg-[#1D9BF0]  text-lg rounded-full w-[56px] h-[56px] flex justify-center items-center'
+          >
+            <FaFeather size={22} />
+          </a>
+        )}
 
         <button className='py-11' onClick={getCredentials}>
           {/* <p>user</p>
