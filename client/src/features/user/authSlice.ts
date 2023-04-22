@@ -152,6 +152,9 @@ export const authSlice = createSlice({
           loading: 'idle',
         }
       })
+    builder.addCase(checkLoginState.rejected, (state, action) => {
+      state.loading = 'idle'
+    })
   },
 })
 

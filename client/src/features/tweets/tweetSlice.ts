@@ -58,7 +58,8 @@ export const createTweetThread = createAsyncThunk<
   }
 >('tweet/create', async (tweet, thunkAPI) => {
   try {
-    const userId = thunkAPI.getState().auth.userId
+    const userId = thunkAPI.getState().auth._id
+    if (!userId) thunkAPI.rejectWithValue('no id')
     const completedTweet: Tweet = { ...tweet, author: userId }
 
     const response = await fetch('http://localhost:4000/api/v1/tweet/thread', {
