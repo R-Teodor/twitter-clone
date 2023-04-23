@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import TweetComponents, { TweetObj } from './TweetComponents'
+import TweetComponents, { TweetObj } from '../components/TweetComponents'
 import { HiGif, HiCalendar, HiPhoto } from 'react-icons/hi2'
 import { HiEmojiHappy, HiChartBar, HiLocationMarker } from 'react-icons/hi'
 import { useDispatch } from 'react-redux'

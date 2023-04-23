@@ -1,15 +1,21 @@
 import Dashboard from './pages/Dashboard'
-import Home from './components/Home'
+import Home from './pages/Home'
 
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
-import Explore from './components/Explore'
+import Explore from './pages/Explore'
 import Notifications from './components/Notifications'
 import Messages from './components/Messages'
 import Bookmarks from './components/Bookmarks'
 import TwitterBlue from './components/TwitterBlue'
-import Profile from './components/Profile'
+import Profile from './pages/Profile'
 import Register from './pages/Register'
 import ProtectedRoute from './components/ProtectedRoute'
+import {
+  PersonalTweets,
+  Replies,
+  Media,
+  Likes,
+} from './components/ProfileContent'
 
 function App() {
   return (
@@ -60,9 +66,14 @@ function App() {
                   <Profile />
                 </ProtectedRoute>
               }
-            />
+            ></Route>
 
-            <Route path='/:userTag' element={<Profile />} />
+            <Route path='/:userTag' element={<Profile />}>
+              <Route index element={<PersonalTweets />} />
+              <Route path='with_replies' element={<Replies />} />
+              <Route path='media' element={<Media />} />
+              <Route path='likes' element={<Likes />} />
+            </Route>
           </Route>
           <Route path='/login' element={<Register />} />
           <Route

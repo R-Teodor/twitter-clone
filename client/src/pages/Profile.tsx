@@ -1,4 +1,4 @@
-import { useParams, useLocation } from 'react-router-dom'
+import { useParams, useLocation, Outlet, NavLink } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import type { User } from '../features/user/authSlice'
@@ -111,10 +111,20 @@ const Profile = () => {
             </p>
           </div>
 
-          <p>Nav Links</p>
+          <div className='flex flex-row gap-4 justify-center'>
+            <NavLink to={''}>Tweets</NavLink>
+            <NavLink to={'with_replies'}>Replies</NavLink>
+            <NavLink to={'media'}>Media</NavLink>
+            <NavLink to={'likes'}>Likes</NavLink>
+          </div>
         </div>
+      </div>
+
+      <div>
+        <Outlet />
       </div>
     </>
   )
 }
+
 export default Profile

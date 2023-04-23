@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { AppDispatch, RootState } from '../../app/store'
 import { AuthState } from '../user/authSlice'
+import axios from 'axios'
 
 export interface ThreadObject {
   author: string
@@ -78,16 +79,38 @@ export const createTweetThread = createAsyncThunk<
   }
 })
 
+export const getTweets = createAsyncThunk<
+  Returned[],
+  undefined,
+  {
+    dispatch: AppDispatch
+    state: RootState
+  }
+>('tweet/getAll', async (_, thunkAPI) => {
+  const userId = thunkAPI.getState().auth._id
+  const { data } = await axios.get(
+    'http://localhost:4000/api/v1/tweet/getThreads',
+    { withCredentials: true }
+  )
+  console.log(data)
+  const array = data as Returned[]
+  return array
+})
+
 export const tweetSlice = createSlice({
   name: 'tweet',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(createTweetThread.fulfilled, (state, action) => {
-      console.log(action.payload)
+    builder
+      .addCase(createTweetThread.fulfilled, (state, action) => {
+        console.log(action.payload)
 
-      state.personalTweets.push(action.payload.thread)
-    })
+        state.personalTweets.push(action.payload.thread)
+      })
+      .addCase(getTweets.fulfilled, (state, action) => {
+        console.log(action.payload)
+      })
   },
 })
 
