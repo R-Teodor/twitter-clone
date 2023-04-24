@@ -1,6 +1,7 @@
 const Tweet = require('../models/tweet')
 const Thread = require('../models/thread')
 const Unauthorized = require('../errors/unauthorized')
+const { BadRequest } = require('../errors')
 
 const createTweet = async (req, res) => {
   const { author, content, replied } = req.body
@@ -31,6 +32,16 @@ const getThreads = async (req, res) => {
   res.json({ threads })
 }
 
+const getTweetsById = async (req, res) => {
+  const id = req.params.userId
+  if (!id) throw new BadRequest('Aiii')
+
+  const threads = await Thread.find({ author: id })
+  console.log(threads)
+
+  res.json({ threads })
+}
+
 const populateThread = async (req, res) => {
   const thread = await Thread.findOne({ author: '6424677936d980f7fbd2c21d' })
     .populate('comments')
@@ -52,4 +63,5 @@ module.exports = {
   postThread,
   getThreads,
   populateThread,
+  getTweetsById,
 }

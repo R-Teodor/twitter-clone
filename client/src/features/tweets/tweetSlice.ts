@@ -19,16 +19,16 @@ export interface TweetState {
 interface Thread {
   author: string
   content: string
-  imgUrl: string
+  mediaUrl: string
   comments?: any[]
   _id: string
   createdAt: string
   updatedAt?: string
-  __v?: number
+  parentThread?: string
 }
 
 type Returned = {
-  thread: Thread
+  threads: Thread
 }
 
 type Tweet = {
@@ -72,7 +72,7 @@ export const createTweetThread = createAsyncThunk<
       credentials: 'include',
     })
     const data: Returned = await response.json()
-
+    console.log('This is the returned data from Create Tweet EndPoint', data)
     return data
   } catch (error) {
     return thunkAPI.rejectWithValue('error')
@@ -80,21 +80,17 @@ export const createTweetThread = createAsyncThunk<
 })
 
 export const getTweets = createAsyncThunk<
-  Returned[],
-  undefined,
+  ThreadObject[],
+  String,
   {
     dispatch: AppDispatch
     state: RootState
   }
->('tweet/getAll', async (_, thunkAPI) => {
-  const userId = thunkAPI.getState().auth._id
-  const { data } = await axios.get(
-    'http://localhost:4000/api/v1/tweet/getThreads',
-    { withCredentials: true }
-  )
+>('tweet/getAll', async (id, thunkAPI) => {
+  const { data } = await axios.get(`http://localhost:4000/api/v1/tweet/${id}`)
   console.log(data)
-  const array = data as Returned[]
-  return array
+
+  return data.threads
 })
 
 export const tweetSlice = createSlice({
@@ -106,10 +102,11 @@ export const tweetSlice = createSlice({
       .addCase(createTweetThread.fulfilled, (state, action) => {
         console.log(action.payload)
 
-        state.personalTweets.push(action.payload.thread)
+        // state.personalTweets.push(action.payload.threads)
       })
       .addCase(getTweets.fulfilled, (state, action) => {
         console.log(action.payload)
+        state.tweets = action.payload
       })
   },
 })

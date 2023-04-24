@@ -121,7 +121,7 @@ const Profile = () => {
       </div>
 
       <div>
-        <Outlet />
+        <Outlet context={{ _id: user?._id }} />
       </div>
     </>
   )

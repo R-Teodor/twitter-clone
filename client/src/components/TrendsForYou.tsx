@@ -43,7 +43,7 @@ const TrendsForYou = () => {
         dropDownRef.current &&
         !dropDownRef.current.contains(event.target as Node)
       ) {
-        console.log(dropDownRef.current)
+        // console.log(dropDownRef.current)
         setToggleDropdownMenu(true)
       }
     }

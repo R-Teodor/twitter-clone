@@ -11,13 +11,17 @@ const threadSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    imgUrl: {
+    mediaUrl: {
       type: String,
       default: 'https://placehold.co/450?text=Hello+World&font=roboto',
     },
     comments: {
       type: [mongoose.Types.ObjectId],
-      ref: 'Tweet',
+      ref: 'Thread',
+    },
+    parentThread: {
+      type: mongoose.Types.ObjectId,
+      ref: 'Thread',
     },
   },
   {
