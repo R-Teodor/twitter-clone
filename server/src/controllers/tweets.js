@@ -1,5 +1,6 @@
 const Tweet = require('../models/tweet')
 const Thread = require('../models/thread')
+const User = require('../models/user')
 const Unauthorized = require('../errors/unauthorized')
 const { BadRequest } = require('../errors')
 
@@ -25,6 +26,15 @@ const getTweets = async (req, res) => {
   res.json({ msg: tweet })
 }
 
+// ###############
+
+const postThread = async (req, res) => {
+  const thread = req.body
+  const createdThread = await Thread.create(thread)
+
+  res.json({ thread: createdThread })
+}
+
 const getThreads = async (req, res) => {
   if (!req.userId) throw new Unauthorized('Not Authorized')
   const threads = await Thread.find({ author: req.userId })
@@ -37,9 +47,27 @@ const getTweetsById = async (req, res) => {
   if (!id) throw new BadRequest('Aiii')
 
   const threads = await Thread.find({ author: id })
-  console.log(threads)
+    .select('-__v')
+    .populate('author', 'name userTag')
+    .exec()
 
   res.json({ threads })
+}
+
+const getFollowingThreads = async (req, res) => {
+  const id = req.userId
+
+  const followedUsers = await User.findById(req.userId).select('following -_id')
+
+  const followedUsersTweets = await Thread.find({
+    author: { $in: followedUsers.following },
+  })
+    .limit(10)
+    .select('-__v -updatedAt')
+    .populate('author', 'name userTag')
+    .exec()
+
+  res.json(followedUsersTweets)
 }
 
 const populateThread = async (req, res) => {
@@ -50,13 +78,6 @@ const populateThread = async (req, res) => {
   res.json({ thread })
 }
 
-const postThread = async (req, res) => {
-  const thread = req.body
-  const createdThread = await Thread.create(thread)
-
-  res.json({ thread: createdThread })
-}
-
 module.exports = {
   createTweet,
   getTweets,
@@ -64,4 +85,5 @@ module.exports = {
   getThreads,
   populateThread,
   getTweetsById,
+  getFollowingThreads,
 }

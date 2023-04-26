@@ -1,22 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import type { PayloadAction } from '@reduxjs/toolkit'
 import { AppDispatch, RootState } from '../../app/store'
-import { AuthState } from '../user/authSlice'
 import axios from 'axios'
 
-export interface ThreadObject {
-  author: string
-  content: string
-  imgUrl: File
-  comments?: ThreadObject[]
-}
-
 export interface TweetState {
-  tweets: ThreadObject[]
+  tweets: ReturnThread[]
   personalTweets: Thread[]
 }
 
-interface Thread {
+export interface Thread {
   author: string
   content: string
   mediaUrl: string
@@ -26,9 +17,12 @@ interface Thread {
   updatedAt?: string
   parentThread?: string
 }
-
-type Returned = {
-  threads: Thread
+export interface ReturnThread extends Omit<Thread, 'author'> {
+  author: {
+    _id?: String
+    name: String
+    userTag: String
+  }
 }
 
 type Tweet = {
@@ -51,7 +45,9 @@ const initialState: TweetState = {
 }
 
 export const createTweetThread = createAsyncThunk<
-  Returned,
+  {
+    thread: Thread
+  },
   Tweet,
   {
     dispatch: AppDispatch
@@ -71,7 +67,7 @@ export const createTweetThread = createAsyncThunk<
       },
       credentials: 'include',
     })
-    const data: Returned = await response.json()
+    const data = await response.json()
     console.log('This is the returned data from Create Tweet EndPoint', data)
     return data
   } catch (error) {
@@ -80,7 +76,7 @@ export const createTweetThread = createAsyncThunk<
 })
 
 export const getTweets = createAsyncThunk<
-  ThreadObject[],
+  ReturnThread[],
   String,
   {
     dispatch: AppDispatch
@@ -88,7 +84,6 @@ export const getTweets = createAsyncThunk<
   }
 >('tweet/getAll', async (id, thunkAPI) => {
   const { data } = await axios.get(`http://localhost:4000/api/v1/tweet/${id}`)
-  console.log(data)
 
   return data.threads
 })
@@ -102,10 +97,9 @@ export const tweetSlice = createSlice({
       .addCase(createTweetThread.fulfilled, (state, action) => {
         console.log(action.payload)
 
-        // state.personalTweets.push(action.payload.threads)
+        state.personalTweets.push(action.payload.thread)
       })
       .addCase(getTweets.fulfilled, (state, action) => {
-        console.log(action.payload)
         state.tweets = action.payload
       })
   },

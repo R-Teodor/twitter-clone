@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { AppDispatch, RootState } from '../../app/store'
 import { useOutletContext } from 'react-router-dom'
+import TweetComponents from '../TweetComponents'
+import type { ReturnThread } from '../../features/tweets/tweetSlice'
 
 const PersonalTweets = () => {
   const tweets = useSelector((state: RootState) => state.tweet.tweets)
@@ -18,7 +20,12 @@ const PersonalTweets = () => {
   return (
     <div>
       {tweets &&
-        tweets.map((item, index) => <div key={index}>{item.content}</div>)}
+        tweets.map((item, index) => (
+          <TweetComponents
+            tweet={item as unknown as ReturnThread}
+            key={index}
+          />
+        ))}
     </div>
   )
 }

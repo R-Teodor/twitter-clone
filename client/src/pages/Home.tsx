@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom'
 import TweetComponents, { TweetObj } from '../components/TweetComponents'
 import { HiGif, HiCalendar, HiPhoto } from 'react-icons/hi2'
 import { HiEmojiHappy, HiChartBar, HiLocationMarker } from 'react-icons/hi'
-import { useDispatch } from 'react-redux'
-import { AppDispatch } from '../app/store'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from '../app/store'
 import { createTweetThread } from '../features/tweets/tweetSlice'
+import axios from 'axios'
+import type { ReturnThread } from '../features/tweets/tweetSlice'
 
 type FeedState = 'For You' | 'Following'
 
@@ -43,8 +45,12 @@ const tweet2: TweetObj = {
 const Home = () => {
   const [feedState, setFeedState] = useState<FeedState>('For You')
   const [tweetData, setTweetData] = useState<TweetObj>(tweet)
+  const [tweetArray, setTweetArray] = useState<ReturnThread[]>([])
   const [textareaField, setTextareaField] = useState('')
 
+  const userTweets = useSelector(
+    (state: RootState) => state.tweet.personalTweets
+  )
   const dispatch = useDispatch<AppDispatch>()
 
   const handleFeedState = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -56,6 +62,17 @@ const Home = () => {
     if (newState === 'For You') {
       setTweetData(tweet)
     }
+  }
+
+  const handleFeedRequest = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const newState = e.currentTarget.textContent as FeedState
+    setFeedState(newState)
+    const { data } = await axios.get(
+      'http://localhost:4000/api/v1/tweet/following',
+      { withCredentials: true }
+    )
+    console.log(data)
+    setTweetArray(data)
   }
 
   const activeFeedState =
@@ -79,7 +96,7 @@ const Home = () => {
           <Link
             to={'/'}
             className='font-2xl px-6 py-4 flex-grow hover:bg-[rgba(247,249,249,0.09)] text-center duration-100 text-[rgb(139,152,165)]'
-            onClick={handleFeedState}
+            onClick={handleFeedRequest}
           >
             <span className={feedState === 'Following' ? activeFeedState : ''}>
               Following
@@ -144,10 +161,20 @@ const Home = () => {
               Tweets
             </div>
           )}
+          {userTweets &&
+            userTweets
+              .map((item, index) => <div key={index}>{item.content}</div>)
+              .reverse()}
+
+          {tweetArray &&
+            tweetArray.map((item, index) => (
+              <TweetComponents tweet={item} key={item._id} />
+            ))}
+
+          {/* <TweetComponents tweet={tweetData} />
           <TweetComponents tweet={tweetData} />
           <TweetComponents tweet={tweetData} />
-          <TweetComponents tweet={tweetData} />
-          <TweetComponents tweet={tweetData} />
+          <TweetComponents tweet={tweetData} /> */}
           {/* <div className='text-white h-screen'>Home 1</div>
           <div className='text-white h-screen'>Home 2</div>
           <div className='text-white h-screen'>Home 3</div>
