@@ -3,7 +3,7 @@ import Home from './pages/Home'
 
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import Explore from './pages/Explore'
-import Notifications from './components/Notifications'
+import Notifications from './pages/Notifications'
 import Messages from './components/Messages'
 import Bookmarks from './components/Bookmarks'
 import TwitterBlue from './components/TwitterBlue'

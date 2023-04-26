@@ -170,15 +170,24 @@ const Home = () => {
             tweetArray.map((item, index) => (
               <TweetComponents tweet={item} key={item._id} />
             ))}
-
-          {/* <TweetComponents tweet={tweetData} />
-          <TweetComponents tweet={tweetData} />
-          <TweetComponents tweet={tweetData} />
-          <TweetComponents tweet={tweetData} /> */}
-          {/* <div className='text-white h-screen'>Home 1</div>
-          <div className='text-white h-screen'>Home 2</div>
-          <div className='text-white h-screen'>Home 3</div>
-          <div className='text-white h-screen'>Home 4</div> */}
+          {tweetArray.length == 0 && (
+            <div className='flex flex-col justify-center items-center pt-6'>
+              <div className='max-w-[360px]'>
+                <h1 className='font-bold text-3xl'>Welcome to Twitter!</h1>
+                <p className='max-w-[40ch] pt-2 text-[rgb(139,152,165)] '>
+                  This is the best place to see what’s happening in your world.
+                  Find some people and topics to follow now.
+                </p>
+              </div>
+              <div className='pt-4 w-[360px]'>
+                <div className='flex justify-start'>
+                  <button className=' py-3 px-8 block bg-[#1D9BF0] text-center font-bold text-lg rounded-3xl'>
+                    Let's Go
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </main>
       </div>
     </>

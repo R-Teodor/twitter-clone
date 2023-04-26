@@ -11,7 +11,7 @@ function ProtectedRoute({ children }: AppProps) {
   const id = useSelector((state: RootState) => state.auth.email)
   const navigate = useNavigate()
   console.log(id)
-  if (!id) return <Navigate to={'explore'} replace />
+  if (!id) return <Navigate to={'/explore'} />
 
   // useEffect(() => {
   //   if (!id) {
