@@ -11,12 +11,18 @@ const {
   populateThread,
   getTweetsById,
   getFollowingThreads,
+  postReplyThread,
+  populateReplyThread,
 } = require('../controllers/tweets')
 
 // router.route('/getTweets').get()
 router.route('/createTweet').post(createTweet)
 router.route('/getTweets').get(getTweets)
 router.route('/thread').post(postThread).get(populateThread)
+router
+  .route('/replythread/:tweetId')
+  .post(postReplyThread)
+  .get(populateReplyThread)
 router.route('/getThreads').get(authMiddleware, getThreads)
 router.route('/following').get(authMiddleware, getFollowingThreads)
 router.route('/:userId').get(getTweetsById)

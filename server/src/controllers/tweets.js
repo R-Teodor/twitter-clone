@@ -70,6 +70,35 @@ const getFollowingThreads = async (req, res) => {
   res.json(followedUsersTweets)
 }
 
+const postReplyThread = async (req, res) => {
+  const tweetId = req.params.tweetId
+  const thread = req.body
+  const foundTweet = await Thread.findById(tweetId)
+  let finalTweetResponse
+  if (foundTweet) {
+    const replyTweet = await Thread.create(thread)
+    foundTweet.comments.push(replyTweet._id)
+    finalTweetResponse = await foundTweet.save()
+  }
+
+  res.json({ thread, finalTweetResponse })
+}
+const populateReplyThread = async (req, res) => {
+  const tweetId = req.params.tweetId
+  const comments = await Thread.findById(tweetId)
+    .populate({
+      path: 'comments',
+      populate: {
+        path: 'author',
+        model: 'User',
+        select: 'name userTag',
+      },
+    })
+    .exec()
+
+  res.json(comments.comments)
+}
+
 const populateThread = async (req, res) => {
   const thread = await Thread.findOne({ author: '6424677936d980f7fbd2c21d' })
     .populate('comments')
@@ -86,4 +115,6 @@ module.exports = {
   populateThread,
   getTweetsById,
   getFollowingThreads,
+  postReplyThread,
+  populateReplyThread,
 }

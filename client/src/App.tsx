@@ -16,6 +16,7 @@ import {
   Media,
   Likes,
 } from './components/ProfileContent'
+import TweetStatus from './components/TweetStatus'
 
 function App() {
   return (
@@ -74,6 +75,7 @@ function App() {
               <Route path='media' element={<Media />} />
               <Route path='likes' element={<Likes />} />
             </Route>
+            <Route path='/:userTag/status/:tweetId' element={<TweetStatus />} />
           </Route>
           <Route path='/login' element={<Register />} />
           <Route

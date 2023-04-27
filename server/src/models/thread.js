@@ -23,6 +23,18 @@ const threadSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: 'Thread',
     },
+    retweets: {
+      type: Number,
+      default: 0,
+    },
+    likes: {
+      type: [mongoose.Types.ObjectId],
+      default: [],
+    },
+    views: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

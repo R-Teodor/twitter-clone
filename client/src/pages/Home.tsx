@@ -71,7 +71,7 @@ const Home = () => {
       'http://localhost:4000/api/v1/tweet/following',
       { withCredentials: true }
     )
-    console.log(data)
+    console.log(newState)
     setTweetArray(data)
   }
 
@@ -87,7 +87,7 @@ const Home = () => {
           <Link
             to={'/'}
             className='font-2xl px-6 py-4 flex-grow hover:bg-[rgba(247,249,249,0.09)] text-center duration-200 text-[rgb(139,152,165)]'
-            onClick={handleFeedState}
+            onClick={handleFeedRequest}
           >
             <span className={feedState === 'For You' ? activeFeedState : ''}>
               For You
@@ -166,11 +166,13 @@ const Home = () => {
               .map((item, index) => <div key={index}>{item.content}</div>)
               .reverse()}
 
-          {tweetArray &&
+          {feedState == 'Following' &&
+            tweetArray &&
             tweetArray.map((item, index) => (
               <TweetComponents tweet={item} key={item._id} />
             ))}
-          {tweetArray.length == 0 && (
+
+          {feedState == 'For You' && (
             <div className='flex flex-col justify-center items-center pt-6'>
               <div className='max-w-[360px]'>
                 <h1 className='font-bold text-3xl'>Welcome to Twitter!</h1>

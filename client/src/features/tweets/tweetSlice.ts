@@ -88,6 +88,19 @@ export const getTweets = createAsyncThunk<
   return data.threads
 })
 
+export const getTweetsTest = createAsyncThunk<
+  ReturnThread[],
+  String,
+  {
+    dispatch: AppDispatch
+    state: RootState
+  }
+>('tweet/getAll', async (id, thunkAPI) => {
+  const { data } = await axios.get(`http://localhost:4000/api/v1/tweet/${id}`)
+
+  return data.threads
+})
+
 export const tweetSlice = createSlice({
   name: 'tweet',
   initialState,
