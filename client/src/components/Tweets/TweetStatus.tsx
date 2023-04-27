@@ -1,10 +1,10 @@
 import { useParams, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { RootState } from '../app/store'
+import { RootState } from '../../app/store'
 import TweetComponents from './TweetComponents'
 import axios, { AxiosPromise, AxiosResponse } from 'axios'
-import { ReturnThread } from '../features/tweets/tweetSlice'
+import { ReturnThread } from '../../features/tweets/tweetSlice'
 
 function StatusTest() {
   const { userTag, tweetId } = useParams()

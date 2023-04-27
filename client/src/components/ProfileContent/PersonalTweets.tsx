@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { AppDispatch, RootState } from '../../app/store'
 import { useOutletContext } from 'react-router-dom'
-import TweetComponents from '../TweetComponents'
+import TweetComponents from '../Tweets/TweetComponents'
 import type { ReturnThread } from '../../features/tweets/tweetSlice'
 
 const PersonalTweets = () => {

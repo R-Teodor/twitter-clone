@@ -7,24 +7,7 @@ import {
   FaDownload,
 } from 'react-icons/fa'
 import { Link, useNavigate } from 'react-router-dom'
-import type { ReturnThread } from '../features/tweets/tweetSlice'
-
-export type TweetObj = {
-  userName: string
-  userTag: string
-  verified: boolean
-  date: string
-  tweetContent: {
-    img?: string
-    media?: string
-    text: string
-    reply?: string
-  }
-  comments?: string
-  retweets?: string
-  likes?: string
-  views?: number
-}
+import type { ReturnThread } from '../../features/tweets/tweetSlice'
 
 export type TweetComponentProps = {
   tweet: ReturnThread
@@ -33,7 +16,7 @@ export type TweetComponentProps = {
 const TweetComponents = ({ tweet }: TweetComponentProps) => {
   const navigate = useNavigate()
 
-  const handleLinkClick = (
+  const handleNavigation = (
     event: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
     event.preventDefault()
@@ -48,7 +31,7 @@ const TweetComponents = ({ tweet }: TweetComponentProps) => {
     <Link
       to={`/${tweet.author.userTag}/status/${tweet._id}`}
       state={tweet}
-      onClick={handleLinkClick}
+      onClick={handleNavigation}
     >
       <div className='flex flex-row px-5 py-3 hover:bg-[rgba(247,249,249,0.03)] duration-150 border-b-[1px] border-slate-500 border-opacity-40'>
         <div className='w-12 h-12 overflow-hidden rounded-full flex-shrink-0'>

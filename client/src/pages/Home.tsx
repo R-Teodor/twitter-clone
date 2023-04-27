@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import TweetComponents, { TweetObj } from '../components/TweetComponents'
+import TweetComponents from '../components/Tweets/TweetComponents'
 import { HiGif, HiCalendar, HiPhoto } from 'react-icons/hi2'
 import { HiEmojiHappy, HiChartBar, HiLocationMarker } from 'react-icons/hi'
 import { useDispatch, useSelector } from 'react-redux'
@@ -11,40 +11,9 @@ import type { ReturnThread } from '../features/tweets/tweetSlice'
 
 type FeedState = 'For You' | 'Following'
 
-const tweet: TweetObj = {
-  userName: 'Bahjeera',
-  userTag: '@Bah_jera',
-  verified: true,
-  date: 'Mar 15',
-  tweetContent: {
-    text: 'It a nice life to be in the cyber security scene',
-    img: '/src/assets/cyber-bg.png',
-  },
-  comments: '124k',
-  retweets: '22k',
-  likes: '80k',
-  views: 17345,
-}
-
-const tweet2: TweetObj = {
-  userName: 'Bartholomeo',
-  userTag: '@Bart_holo_meo00',
-  verified: true,
-  date: 'Mar 18',
-  tweetContent: {
-    text: 'Second Twweet display',
-    img: 'https://placehold.co/600x400',
-  },
-  comments: '324k',
-  retweets: '122k',
-  likes: '40k',
-  views: 112345,
-}
-
 // rgb(56, 68, 77) border color
 const Home = () => {
   const [feedState, setFeedState] = useState<FeedState>('For You')
-  const [tweetData, setTweetData] = useState<TweetObj>(tweet)
   const [tweetArray, setTweetArray] = useState<ReturnThread[]>([])
   const [textareaField, setTextareaField] = useState('')
 
@@ -52,17 +21,6 @@ const Home = () => {
     (state: RootState) => state.tweet.personalTweets
   )
   const dispatch = useDispatch<AppDispatch>()
-
-  const handleFeedState = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    const newState = e.currentTarget.textContent as FeedState
-    setFeedState(newState)
-    if (newState === 'Following') {
-      setTweetData(tweet2)
-    }
-    if (newState === 'For You') {
-      setTweetData(tweet)
-    }
-  }
 
   const handleFeedRequest = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     const newState = e.currentTarget.textContent as FeedState

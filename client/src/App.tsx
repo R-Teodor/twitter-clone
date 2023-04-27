@@ -4,8 +4,8 @@ import Home from './pages/Home'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import Explore from './pages/Explore'
 import Notifications from './pages/Notifications'
-import Messages from './components/Messages'
-import Bookmarks from './components/Bookmarks'
+import Messages from './pages/Messages'
+import Bookmarks from './pages/Bookmarks'
 import TwitterBlue from './components/TwitterBlue'
 import Profile from './pages/Profile'
 import Register from './pages/Register'
@@ -16,7 +16,7 @@ import {
   Media,
   Likes,
 } from './components/ProfileContent'
-import TweetStatus from './components/TweetStatus'
+import TweetStatus from './components/Tweets/TweetStatus'
 
 function App() {
   return (
