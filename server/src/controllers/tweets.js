@@ -51,7 +51,7 @@ const getTweetsById = async (req, res) => {
     .populate('author', 'name userTag')
     .exec()
 
-  res.json({ threads })
+  res.json(threads)
 }
 
 const getFollowingThreads = async (req, res) => {
@@ -72,9 +72,10 @@ const getFollowingThreads = async (req, res) => {
 
 const postReplyThread = async (req, res) => {
   const tweetId = req.params.tweetId
-  const thread = req.body
   const foundTweet = await Thread.findById(tweetId)
+  const thread = { ...req.body, parentThread: tweetId }
   let finalTweetResponse
+
   if (foundTweet) {
     const replyTweet = await Thread.create(thread)
     foundTweet.comments.push(replyTweet._id)
@@ -83,6 +84,7 @@ const postReplyThread = async (req, res) => {
 
   res.json({ thread, finalTweetResponse })
 }
+
 const populateReplyThread = async (req, res) => {
   const tweetId = req.params.tweetId
   const comments = await Thread.findById(tweetId)
@@ -94,9 +96,10 @@ const populateReplyThread = async (req, res) => {
         select: 'name userTag',
       },
     })
+    .populate('parentThread')
     .exec()
-
-  res.json(comments.comments)
+  // console.log(comments)
+  res.json(comments)
 }
 
 const populateThread = async (req, res) => {

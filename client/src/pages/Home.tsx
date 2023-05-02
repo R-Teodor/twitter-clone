@@ -8,6 +8,7 @@ import { AppDispatch, RootState } from '../app/store'
 import { createTweetThread } from '../features/tweets/tweetSlice'
 import axios from 'axios'
 import type { ReturnThread } from '../features/tweets/tweetSlice'
+import TweetInputComponent from '../components/Tweets/TweetInputComponent'
 
 type FeedState = 'For You' | 'Following'
 
@@ -31,6 +32,12 @@ const Home = () => {
     )
     console.log(newState)
     setTweetArray(data)
+  }
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    dispatch(createTweetThread({ content: textareaField }))
   }
 
   const activeFeedState =
@@ -62,57 +69,18 @@ const Home = () => {
           </Link>
         </div>
       </div>
-      <div className='flex flex-col w-full'>
-        <header className='flex flex-col w-full py-3 pb-2 border-b-[1px] border-slate-500 border-opacity-40'>
-          <div className='px-3  flex gap-5'>
-            <div className='w-12 h-12 overflow-hidden rounded-full'>
-              <img
-                src='https://placehold.co/100x100'
-                alt=''
-                className='w-full object-contain object-center'
-              />
-            </div>
-            <textarea
-              // type='textarea'
-              placeholder="What's happening"
-              className='text-2xl bg-transparent outline-none flex-grow flex-shrink-0 resize-none '
-              rows={2}
-              maxLength={245}
-              value={textareaField}
-              onChange={(e) => setTextareaField(e.target.value)}
-            />
-          </div>
-          <div className='flex justify-between pr-5 pl-20'>
-            <nav className='flex gap-4 text-blue-400'>
-              <span>
-                <HiPhoto size={20} />
-              </span>
-              <span>
-                <HiGif size={20} />
-              </span>
-              <span>
-                <HiChartBar size={20} />
-              </span>
-              <span>
-                <HiEmojiHappy size={20} />
-              </span>
-              <span>
-                <HiCalendar size={20} />
-              </span>
-              <span>
-                <HiLocationMarker size={20} />
-              </span>
-            </nav>
-            <button
-              className='bg-[#1D9BF0] font-bold rounded-3xl py-1.5 px-4'
-              onClick={() =>
-                dispatch(createTweetThread({ content: textareaField }))
-              }
-            >
-              Tweet
-            </button>
-          </div>
-        </header>
+      <div className='flex flex-col w-full '>
+        <form
+          onSubmit={handleSubmit}
+          className='border-b-[1px] border-slate-500 border-opacity-40'
+        >
+          <TweetInputComponent
+            componentType='Tweet'
+            state={textareaField}
+            setState={setTextareaField}
+          />
+        </form>
+
         <main>
           {isData && (
             <div className='text-center text-l py-4  border-b-[1px] border-slate-500 border-opacity-40 hover:bg-[rgba(247,249,249,0.03)] duration-150'>

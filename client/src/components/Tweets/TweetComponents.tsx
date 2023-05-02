@@ -17,7 +17,7 @@ const TweetComponents = ({ tweet }: TweetComponentProps) => {
   const navigate = useNavigate()
 
   const handleNavigation = (
-    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
     event.preventDefault()
 
@@ -26,13 +26,15 @@ const TweetComponents = ({ tweet }: TweetComponentProps) => {
     })
   }
 
+  const handleIconClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation()
+    // console.log('This is the target', e.target)
+    // console.log('This is the current target', e.currentTarget.id)
+  }
+
   if (tweet && Object.keys(tweet).length == 0) return <div>No Tweets</div>
   return (
-    <Link
-      to={`/${tweet.author.userTag}/status/${tweet._id}`}
-      state={tweet}
-      onClick={handleNavigation}
-    >
+    <div onClick={handleNavigation} className='cursor-pointer'>
       <div className='flex flex-row px-5 py-3 hover:bg-[rgba(247,249,249,0.03)] duration-150 border-b-[1px] border-slate-500 border-opacity-40'>
         <div className='w-12 h-12 overflow-hidden rounded-full flex-shrink-0'>
           <img
@@ -71,32 +73,48 @@ const TweetComponents = ({ tweet }: TweetComponentProps) => {
           </div>
 
           <div className='flex flex-row gap-14 pt-3'>
-            <div className=' flex justify-center items-center text-[#8B98A5] cursor-pointer hover:text-cyan-500 group duration-150'>
+            <div
+              className=' flex justify-center items-center text-[#8B98A5] cursor-pointer hover:text-cyan-500 group duration-150'
+              id='comments'
+              onClick={handleIconClick}
+            >
               <div className='flex justify-center items-center w-8 h-8 rounded-full group-hover:bg-cyan-800 duration-150'>
                 <FaComment size={16} />
               </div>
               <div className='pl-2'>{tweet.comments?.length}</div>
             </div>
-            <div className=' flex justify-center items-center text-[#8B98A5] cursor-pointer hover:text-green-400 group duration-150'>
+            <div
+              className=' flex justify-center items-center text-[#8B98A5] cursor-pointer hover:text-green-400 group duration-150'
+              onClick={handleIconClick}
+            >
               <div className='flex justify-center items-center w-8 h-8 rounded-full group-hover:bg-green-900 duration-150'>
                 <FaRetweet size={16} />
               </div>
               <div className='pl-2'>{tweet.comments?.length}</div>
             </div>
-            <div className=' flex justify-center items-center text-[#8B98A5] cursor-pointer hover:text-pink-300 group duration-150'>
+            <div
+              className=' flex justify-center items-center text-[#8B98A5] cursor-pointer hover:text-pink-300 group duration-150'
+              onClick={handleIconClick}
+            >
               <div className='flex justify-center items-center w-8 h-8 rounded-full group-hover:bg-pink-600 duration-150'>
                 <FaHeart size={16} />
               </div>
               <div className='pl-2'>{tweet.comments?.length}</div>
             </div>
 
-            <div className=' flex justify-center items-center  text-[#8B98A5] cursor-pointer hover:text-cyan-500 group duration-150'>
+            <div
+              className=' flex justify-center items-center  text-[#8B98A5] cursor-pointer hover:text-cyan-500 group duration-150'
+              onClick={handleIconClick}
+            >
               <div className='flex justify-center items-center w-8 h-8 rounded-full group-hover:bg-cyan-800 duration-150'>
                 <FaChartBar size={16} />
               </div>
               <div className='pl-2'>{tweet.comments?.length}</div>
             </div>
-            <div className=' flex justify-center items-center text-[#8B98A5] cursor-pointer hover:text-cyan-500 group duration-150'>
+            <div
+              className=' flex justify-center items-center text-[#8B98A5] cursor-pointer hover:text-cyan-500 group duration-150'
+              onClick={handleIconClick}
+            >
               <div className='flex justify-center items-center w-8 h-8 rounded-full group-hover:bg-cyan-800 duration-150'>
                 <FaDownload size={16} />
               </div>
@@ -104,7 +122,7 @@ const TweetComponents = ({ tweet }: TweetComponentProps) => {
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   )
 }
 export default TweetComponents

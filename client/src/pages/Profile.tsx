@@ -1,17 +1,24 @@
-import { useParams, useLocation, Outlet, NavLink } from 'react-router-dom'
+import { useParams, Outlet, NavLink, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+// import { useSelector } from 'react-redux'
 import type { User } from '../features/user/authSlice'
-import { RootState } from '../app/store'
+// import { RootState } from '../app/store'
+import { useGetProfileByUserTagQuery } from '../services/user'
 
 const Profile = () => {
   const [user, setUser] = useState<(User & { isFollowing: boolean }) | null>(
     null
   )
   const { userTag } = useParams()
+  const navigate = useNavigate()
   // const { state } = useLocation()
-  const userDetails = useSelector((state: RootState) => state.auth)
+  // const userDetails = useSelector((state: RootState) => state.auth)
   // console.log(userDetails)
+  const { data, isLoading, error } = useGetProfileByUserTagQuery(
+    userTag as string
+  )
+  console.log('RTK GET PROFILE : ', data)
+  console.log('isloading :', isLoading)
 
   let letter: string = 'P'
   // console.log(state?._id)
@@ -37,47 +44,35 @@ const Profile = () => {
     console.log('Unfollow boii')
   }
 
-  useEffect(() => {
-    const getProfile = async (query: object) => {
-      const response = await fetch(
-        'http://localhost:4000/api/v1/user/profile',
-        {
-          method: 'POST',
-          body: JSON.stringify(query),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-        }
-      )
-      const data: { user: User & { isFollowing: boolean } } =
-        await response.json()
-      console.log('This is the Returned Data: ', data)
-      setUser(data.user)
-    }
-    const getQueryProfile = async (_id: string) => {
-      const response = await fetch(`http://localhost:4000/api/v1/user/${_id}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      })
+  // useEffect(() => {
+  //   const getQueryProfile = async (_id: string) => {
+  //     const response = await fetch(`http://localhost:4000/api/v1/user/${_id}`, {
+  //       method: 'GET',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       credentials: 'include',
+  //     })
 
-      const data = await response.json()
-      setUser(data.user)
-      console.log(data)
-    }
+  //     const data = await response.json()
+  //     setUser(data.user)
+  //     console.log(data)
+  //   }
+  //   if (userTag) getQueryProfile(userTag)
+  // }, [userTag])
 
-    // getProfile(state)
-    if (userTag) getQueryProfile(userTag)
-  }, [userTag])
+  if (isLoading) return <div>LOADING......</div>
 
   return (
     <>
       <div className='flex flex-col w-[600px]'>
         <div>
-          <span className='text-3xl mr-3'>&#x2190;</span>
+          <span
+            className='text-3xl mr-3 cursor-pointer'
+            onClick={() => navigate(-1)}
+          >
+            &#x2190;
+          </span>
           <span className='text-xl font-bold'>{user?.name}</span>
           <p className='text-sm'>0 Tweets</p>
         </div>
@@ -98,16 +93,16 @@ const Profile = () => {
               className='py-1 px-5 font-bold border-[1px] border-slate-500 border-opacity-40 rounded-full'
               onClick={() => handleFollow(user?._id)}
             >
-              {user?.isFollowing ? 'Unfollow' : 'Follow'}
+              {data.user?.isFollowing ? 'Unfollow' : 'Follow'}
             </button>
           </div>
           <div className='pt-10'>
-            <p>{user?.name}</p>
-            <p>{user?.userTag ? user.userTag : 'User Tag'}</p>
-            <p>{user?.createdAt}</p>
+            <p>{data.user?.name}</p>
+            <p>{data.user?.userTag ? data.user.userTag : 'User Tag'}</p>
+            <p>{data.user?.createdAt}</p>
             <p>
-              <span>{user?.followersCount} Followers</span>{' '}
-              <span>{user?.followingCount} Following</span>
+              <span>{data.user?.followersCount} Followers</span>{' '}
+              <span>{data.user?.followingCount} Following</span>
             </p>
           </div>
 
@@ -121,7 +116,7 @@ const Profile = () => {
       </div>
 
       <div>
-        <Outlet context={{ _id: user?._id }} />
+        <Outlet context={{ _id: data.user?._id }} />
       </div>
     </>
   )
