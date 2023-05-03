@@ -13,6 +13,7 @@ const {
   getFollowingThreads,
   postReplyThread,
   populateReplyThread,
+  favoriteThread,
 } = require('../controllers/tweets')
 
 // router.route('/getTweets').get()
@@ -26,5 +27,7 @@ router
 router.route('/getThreads').get(authMiddleware, getThreads)
 router.route('/following').get(authMiddleware, getFollowingThreads)
 router.route('/:userId').get(getTweetsById)
+
+router.route('/favorite').post(authMiddleware, favoriteThread)
 
 module.exports = router

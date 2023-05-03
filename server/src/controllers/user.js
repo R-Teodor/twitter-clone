@@ -2,22 +2,44 @@ const User = require('../models/user')
 const jwt = require('jsonwebtoken')
 const { BadRequest, Unauthorized } = require('../errors')
 
+let querySearch = 'to'
 const agg = [
   {
     $search: {
       index: 'userSearch',
-      autocomplete: {
-        path: 'name',
-        query: 'To',
-        tokenOrder: 'any',
-        fuzzy: {
-          maxEdits: 2,
-          prefixLength: 1,
-          maxExpansions: 256,
-        },
-      },
-      highlight: {
-        path: 'name',
+      compound: {
+        should: [
+          {
+            autocomplete: {
+              path: 'name',
+              query: `${querySearch}`,
+              tokenOrder: 'any',
+              fuzzy: {
+                maxEdits: 2,
+                prefixLength: 1,
+                maxExpansions: 256,
+              },
+            },
+            highlight: {
+              path: 'name',
+            },
+          },
+          {
+            autocomplete: {
+              path: 'userTag',
+              query: `${querySearch}`,
+              tokenOrder: 'any',
+              fuzzy: {
+                maxEdits: 2,
+                prefixLength: 1,
+                maxExpansions: 256,
+              },
+            },
+            highlight: {
+              path: 'userTag',
+            },
+          },
+        ],
       },
     },
   },
@@ -100,7 +122,59 @@ function getAggregateSearchConfig(query) {
     },
   ]
 
-  return aggConfig
+  // ############### Trial Query
+  // AutoComplete is Working for name and userTag
+  // More Complete implementation is required
+  // searchIndex , AutoComplete index type ,compound/should mongoDB documentation
+
+  const agg = [
+    {
+      $search: {
+        index: 'userSearch',
+        compound: {
+          should: [
+            {
+              autocomplete: {
+                path: 'name',
+                query: `${query}`,
+                tokenOrder: 'any',
+                fuzzy: {
+                  maxEdits: 2,
+                  prefixLength: 1,
+                  maxExpansions: 256,
+                },
+              },
+            },
+            {
+              autocomplete: {
+                path: 'userTag',
+                query: `${query}`,
+                tokenOrder: 'any',
+                fuzzy: {
+                  maxEdits: 2,
+                  prefixLength: 1,
+                  maxExpansions: 256,
+                },
+              },
+            },
+          ],
+        },
+      },
+    },
+    {
+      $limit: 5,
+    },
+    {
+      $project: {
+        _id: 1,
+        name: 1,
+        email: 1,
+        userTag: 1,
+      },
+    },
+  ]
+
+  return agg
 }
 
 const getUserProfile = async (req, res) => {
@@ -110,6 +184,7 @@ const getUserProfile = async (req, res) => {
   // #find a method to check if the person that makes the request is logged in and search the followers array to get the follow button to show or not in the frontend
   // #### partial auth middleware for extra permissions/features
   const token = req.cookies.token
+
   let payload = null
   if (token) {
     payload = jwt.verify(token, process.env.JWT_SECRET)
@@ -130,7 +205,6 @@ const getUserProfile = async (req, res) => {
     })
   }
 
-  console.log(verifyFollowing)
   let verified = true
   if (verifyFollowing.length == 0) verified = false
 
@@ -171,9 +245,29 @@ const followUser = async (req, res) => {
   res.status(200).json({ followingUpdate, followerUpdate })
 }
 
+const getAllUserLikes = async (req, res) => {
+  const userId = req.userId
+  // console.log(req.userId)
+
+  const likes = await User.findById(userId)
+    .populate({
+      path: 'likes',
+      populate: {
+        path: 'author',
+        model: 'User',
+        select: 'name userTag',
+      },
+    })
+    .select('likes')
+    .exec()
+
+  res.json({ data: likes })
+}
+
 module.exports = {
   searchAsTyped,
   testIndex,
   followUser,
   getUserProfile,
+  getAllUserLikes,
 }

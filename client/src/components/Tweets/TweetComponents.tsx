@@ -6,12 +6,19 @@ import {
   FaChartBar,
   FaDownload,
 } from 'react-icons/fa'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import type { ReturnThread } from '../../features/tweets/tweetSlice'
+import axios from 'axios'
 
 export type TweetComponentProps = {
   tweet: ReturnThread
 }
+type ClickEventType =
+  | 'comments'
+  | 'favorite'
+  | 'retweets'
+  | 'views'
+  | 'download'
 
 const TweetComponents = ({ tweet }: TweetComponentProps) => {
   const navigate = useNavigate()
@@ -26,8 +33,20 @@ const TweetComponents = ({ tweet }: TweetComponentProps) => {
     })
   }
 
-  const handleIconClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const handleIconClick = async (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
     e.stopPropagation()
+    const handler = e.currentTarget.id as ClickEventType
+    if (handler == 'favorite') {
+      const { data } = await axios.post(
+        'http://localhost:4000/api/v1/tweet/favorite',
+        { tweetId: tweet._id },
+        { withCredentials: true }
+      )
+
+      console.log(data)
+    }
     // console.log('This is the target', e.target)
     // console.log('This is the current target', e.currentTarget.id)
   }
@@ -85,6 +104,7 @@ const TweetComponents = ({ tweet }: TweetComponentProps) => {
             </div>
             <div
               className=' flex justify-center items-center text-[#8B98A5] cursor-pointer hover:text-green-400 group duration-150'
+              id='retweets'
               onClick={handleIconClick}
             >
               <div className='flex justify-center items-center w-8 h-8 rounded-full group-hover:bg-green-900 duration-150'>
@@ -94,6 +114,7 @@ const TweetComponents = ({ tweet }: TweetComponentProps) => {
             </div>
             <div
               className=' flex justify-center items-center text-[#8B98A5] cursor-pointer hover:text-pink-300 group duration-150'
+              id='favorite'
               onClick={handleIconClick}
             >
               <div className='flex justify-center items-center w-8 h-8 rounded-full group-hover:bg-pink-600 duration-150'>
@@ -104,6 +125,7 @@ const TweetComponents = ({ tweet }: TweetComponentProps) => {
 
             <div
               className=' flex justify-center items-center  text-[#8B98A5] cursor-pointer hover:text-cyan-500 group duration-150'
+              id='views'
               onClick={handleIconClick}
             >
               <div className='flex justify-center items-center w-8 h-8 rounded-full group-hover:bg-cyan-800 duration-150'>
@@ -113,6 +135,7 @@ const TweetComponents = ({ tweet }: TweetComponentProps) => {
             </div>
             <div
               className=' flex justify-center items-center text-[#8B98A5] cursor-pointer hover:text-cyan-500 group duration-150'
+              id='download'
               onClick={handleIconClick}
             >
               <div className='flex justify-center items-center w-8 h-8 rounded-full group-hover:bg-cyan-800 duration-150'>

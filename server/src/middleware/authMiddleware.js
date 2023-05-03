@@ -9,7 +9,8 @@ const authMiddleware = (req, res, next) => {
 
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET)
-    //   console.log(token)
+    // console.log(token)
+    // console.log(payload)
     req.userId = payload.userId
 
     next()

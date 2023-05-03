@@ -25,6 +25,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       unique: true,
     },
+    avatarURL: {
+      type: String,
+      default: 'https://placehold.co/450?text=Avatar&font=roboto',
+    },
     following: {
       type: [mongoose.Types.ObjectId],
       ref: 'User',
@@ -46,6 +50,28 @@ const userSchema = new mongoose.Schema(
     },
     website: {
       type: String,
+    },
+    verified: {
+      type: Boolean,
+      default: false,
+    },
+    accountType: {
+      type: String,
+      enum: ['Person', 'Company'],
+    },
+    tweetCount: {
+      type: Number,
+      default: 0,
+    },
+    media: {
+      type: [mongoose.Types.ObjectId],
+      ref: 'Thread',
+      default: [],
+    },
+    likes: {
+      type: [mongoose.Types.ObjectId],
+      ref: 'Thread',
+      default: [],
     },
   },
   {

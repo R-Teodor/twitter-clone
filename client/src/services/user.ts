@@ -2,7 +2,11 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 export const userApi = createApi({
   reducerPath: 'userAPI',
-  baseQuery: fetchBaseQuery({ baseUrl: `http://localhost:4000/api/v1/user` }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: `http://localhost:4000/api/v1/user`,
+    credentials: 'include',
+  }),
+
   endpoints: (builder) => ({
     getProfileByUserTag: builder.query<any, string>({
       query: (userTag) => `/${userTag}`,

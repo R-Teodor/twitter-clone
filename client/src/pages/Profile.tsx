@@ -18,7 +18,8 @@ const Profile = () => {
     userTag as string
   )
   console.log('RTK GET PROFILE : ', data)
-  console.log('isloading :', isLoading)
+
+  // console.log('isloading :', isLoading)
 
   let letter: string = 'P'
   // console.log(state?._id)
@@ -91,18 +92,18 @@ const Profile = () => {
           <div className='flex justify-end pt-3 px-3'>
             <button
               className='py-1 px-5 font-bold border-[1px] border-slate-500 border-opacity-40 rounded-full'
-              onClick={() => handleFollow(user?._id)}
+              onClick={() => handleFollow(data.user?._id)}
             >
-              {data.user?.isFollowing ? 'Unfollow' : 'Follow'}
+              {data?.user?.isFollowing ? 'Unfollow' : 'Follow'}
             </button>
           </div>
           <div className='pt-10'>
-            <p>{data.user?.name}</p>
-            <p>{data.user?.userTag ? data.user.userTag : 'User Tag'}</p>
-            <p>{data.user?.createdAt}</p>
+            <p>{data?.user?.name}</p>
+            <p>{data?.user?.userTag ? data.user.userTag : 'User Tag'}</p>
+            <p>{data?.user?.createdAt}</p>
             <p>
-              <span>{data.user?.followersCount} Followers</span>{' '}
-              <span>{data.user?.followingCount} Following</span>
+              <span>{data?.user?.followersCount} Followers</span>{' '}
+              <span>{data?.user?.followingCount} Following</span>
             </p>
           </div>
 

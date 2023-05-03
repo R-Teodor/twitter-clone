@@ -55,8 +55,6 @@ const getTweetsById = async (req, res) => {
 }
 
 const getFollowingThreads = async (req, res) => {
-  const id = req.userId
-
   const followedUsers = await User.findById(req.userId).select('following -_id')
 
   const followedUsersTweets = await Thread.find({
@@ -110,6 +108,38 @@ const populateThread = async (req, res) => {
   res.json({ thread })
 }
 
+// ############## Handle user likes and user media
+
+const favoriteThread = async (req, res) => {
+  const { tweetId } = req.body
+  const userId = req.userId
+
+  const foundUser = await User.findByIdAndUpdate(
+    userId,
+    {
+      $addToSet: {
+        likes: tweetId,
+      },
+    },
+    { new: true }
+  )
+
+  if (!foundUser) return res.json({ data: 'Something Went Wrong' })
+
+  const setLikesOnThread = await Thread.findByIdAndUpdate(
+    tweetId,
+    {
+      $addToSet: {
+        likes: userId,
+      },
+    },
+    { new: true }
+  )
+  if (!setLikesOnThread) return res.json({ data: 'Something Went Wrong' })
+
+  res.json({ tweetId, userId })
+}
+
 module.exports = {
   createTweet,
   getTweets,
@@ -120,4 +150,5 @@ module.exports = {
   getFollowingThreads,
   postReplyThread,
   populateReplyThread,
+  favoriteThread,
 }
