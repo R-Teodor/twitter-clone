@@ -14,6 +14,7 @@ import { FaFeather } from 'react-icons/fa'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState, AppDispatch } from '../app/store'
 import { login } from '../features/user/authSlice'
+import { useState } from 'react'
 
 type NavProps = {
   isActive: boolean
@@ -28,33 +29,13 @@ type AppProps = {
 
 const SidebarHeader = ({ userTag }: AppProps) => {
   // const userTag = useSelector((state: RootState) => state.auth.userTag)
-  const dispatch = useDispatch<AppDispatch>()
+  // const dispatch = useDispatch<AppDispatch>()
 
   const activeLink: StylingStyles = {
     className: 'font-bold cursor-pointer    ',
   }
   const nonActiveLink: StylingStyles = {
     className: 'cursor-pointer    ',
-  }
-
-  const getCredentials = async () => {
-    const req = {
-      email: 'teodor@gmail.com',
-      password: 'secret1234',
-    }
-    dispatch(login(req))
-
-    // fetch('http://localhost:4000/api/v1/auth/login', {
-    //   method: 'POST',
-    //   body: JSON.stringify(req),
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   credentials: 'include',
-    // })
-    //   .then((res) => res.json())
-    //   .then((data) => console.log(data))
-    //   .catch((err) => console.error(err))
   }
 
   return (
@@ -197,13 +178,56 @@ const SidebarHeader = ({ userTag }: AppProps) => {
           </a>
         )}
 
-        <button className='py-11' onClick={getCredentials}>
-          {/* <p>user</p>
-          <p>username</p> */}
-          Credentials
-        </button>
+        <SelectUserComponent />
       </nav>
     </header>
   )
 }
+
+const initialReq = {
+  email: 'teodor@gmail.com',
+  password: '',
+}
+const SelectUserComponent = () => {
+  const dispatch = useDispatch<AppDispatch>()
+  const [req, setReq] = useState(initialReq)
+
+  const handleSelectState = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    console.log(e.target.value)
+    setReq({
+      ...req,
+      email: e.target.value,
+    })
+  }
+
+  const handleLoginReq = () => {
+    dispatch(login(req))
+  }
+  return (
+    <>
+      <select
+        name=''
+        id='users'
+        className='text-slate-900 mt-6'
+        onChange={handleSelectState}
+      >
+        <option value='teodor@gmail.com'>Toader</option>
+        <option value='ghabard0@skype.com'>Gerhardt</option>
+        <option value='rkorn1@salon.com'>Rora</option>
+        <option value='lemm2@google.cn'>Lorne</option>
+        <option value='rdillaway3@indiatimes.com'>Rivi</option>
+        <option value='jrushbury4@shareasale.com'>Jessy</option>
+        <option value='hbole5@oakley.com'>Harlan</option>
+        <option value='ccolliard6@virginia.edu'>Clayson</option>
+        <option value='acreaven7@skype.com'>Amandie</option>
+        <option value='codowgaine8@prnewswire.com'>Carlen</option>
+        <option value='lhapps9@patch.com'>Legra</option>
+      </select>
+      <button onClick={handleLoginReq} className='p-4 mt-4'>
+        Login
+      </button>
+    </>
+  )
+}
+
 export default SidebarHeader
