@@ -100,6 +100,21 @@ const populateReplyThread = async (req, res) => {
   res.json(comments)
 }
 
+const getAllUserReplies = async (req, res) => {
+  const { userId } = req.query
+
+  const replies = await Thread.find({
+    author: userId,
+    parentThread: { $ne: null },
+  })
+    .populate({
+      path: 'author',
+    })
+    .exec()
+
+  res.json(replies)
+}
+
 const populateThread = async (req, res) => {
   const thread = await Thread.findOne({ author: '6424677936d980f7fbd2c21d' })
     .populate('comments')
@@ -150,5 +165,6 @@ module.exports = {
   getFollowingThreads,
   postReplyThread,
   populateReplyThread,
+  getAllUserReplies,
   favoriteThread,
 }

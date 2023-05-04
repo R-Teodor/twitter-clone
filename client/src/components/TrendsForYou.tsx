@@ -2,11 +2,11 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { User } from '../features/user/authSlice'
 
+type ReturnedUser = Pick<User, '_id' | 'email' | 'name' | 'userTag'>
+
 const TrendsForYou = () => {
   const [searchInput, setSearchInput] = useState('')
-  const [searchData, setSearchData] = useState<
-    Pick<User, '_id' | 'email' | 'name' | 'userTag'>[]
-  >([])
+  const [searchData, setSearchData] = useState<ReturnedUser[]>([])
   const [toggleDropdownMenu, setToggleDropdownMenu] = useState(true)
   const dropDownRef = useRef<HTMLDivElement>(null)
 
@@ -56,20 +56,29 @@ const TrendsForYou = () => {
 
   return (
     <div className='flex flex-col'>
-      <div className='h-14'>
-        <div className='fixed top-2  bg-black border-2 ' ref={dropDownRef}>
+      <div className='h-14 w-full'>
+        <div className='fixed top-2 w-[350px] ' ref={dropDownRef}>
           <input
             type='search'
             name=''
             id=''
-            className='peer px-6 py-3 text-black '
+            className='peer px-6 py-3 w-full text-gray-300 bg-gray-700 rounded-3xl'
+            placeholder='Search Twitter'
             value={searchInput}
             onChange={optimizedDebounce}
             onFocus={() => setToggleDropdownMenu(false)}
             // onBlur={() => setToggleDropdownMenu(true)}
           />
 
-          <div hidden={toggleDropdownMenu}>
+          {/* rgba(136, 153, 166, 0.2) 0px 0px 15px, rgba(136, 153, 166, 0.15) 0px 0px 3px 1px; */}
+          {/* shadow-[0px_0px_3px_1px_rgba(136, 153, 166, 0.15)] */}
+          <div
+            hidden={toggleDropdownMenu}
+            className='bg-black mt-2 py-6 px-4 rounded-3xl box-content w-full 
+            shadow-[0_0_15px_rgba(136,153,166,0.2),0_0_3px_1px_rgba(136,153,166,0.15)]
+            
+            '
+          >
             {searchInput ? searchInput : 'Try searching for etc..'}
             {searchData?.map((user) => {
               return (
@@ -78,18 +87,14 @@ const TrendsForYou = () => {
                   key={user._id}
                   state={{ _id: user._id }}
                 >
-                  <div className='text-3xl flex gap-2'>
-                    <p>{user?.name}</p>
-                    {/* <button onClick={() => handleFollow(user._id)}>Follow</button> */}
-                    <p>{user?.userTag}</p>
-                  </div>
+                  <ReturnedUserComponent user={user} key={user._id} />
                 </Link>
               )
             })}
           </div>
         </div>
       </div>
-      <section className='w-[80%] bg-gray-700/25 '>
+      <section className=' bg-gray-700/25  rounded-3xl'>
         <h1 className='font-bold text-2xl '>Trends for You</h1>
         <main className='flex flex-col gap-2 '>
           <article>
@@ -134,6 +139,20 @@ const TrendsForYou = () => {
           </article>
         </main>
       </section>
+    </div>
+  )
+}
+
+const ReturnedUserComponent = ({ user }: { user: ReturnedUser }) => {
+  return (
+    <div className='flex items-center gap-4 pt-4'>
+      <div className='w-14 h-14 overflow-hidden rounded-full'>
+        <img src='https://placehold.co/100x100' alt='' className='w-full' />
+      </div>
+      <div className='flex flex-col'>
+        <p>{user.name}</p>
+        <p>{user.userTag}</p>
+      </div>
     </div>
   )
 }

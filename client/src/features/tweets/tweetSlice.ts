@@ -16,6 +16,9 @@ export interface Thread {
   createdAt: string
   updatedAt?: string
   parentThread?: string
+  retweets?: number
+  views?: number
+  likes?: string[]
 }
 export interface ReturnThread extends Omit<Thread, 'author'> {
   author: {

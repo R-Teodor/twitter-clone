@@ -22,7 +22,7 @@ const Dashboard = () => {
     return <div className='text-5xl text-red-600'>Loading Time.....</div>
   return (
     <div className='text-white flex min-h-screen '>
-      <Modal visible={openModal} setState={setOpenModal} />
+      {/* <Modal visible={openModal} setState={setOpenModal} /> */}
       <SidebarHeader userTag={id} />
       <MainContent />
     </div>

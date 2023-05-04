@@ -16,14 +16,14 @@ const MainContent = () => {
     // className='flex-shrink flex-grow max-h-screen overflow-y-scroll'
     <main className='flex-shrink flex-grow' ref={scrollRef}>
       {/* [990px] former value , should check when doing mobile responsive */}
-      <div className='w-[990px] flex gap-3 h-full'>
+      <div className='w-[990px] flex gap-5 h-full'>
         <div className='w-[600px] h-full'>
           {/* Added h-full */}
           <div className='border-[1px] border-slate-500 border-opacity-40 w-full h-full'>
             <Outlet />
           </div>
         </div>
-        <div className='w-[350px] flex-shrink pl-4'>
+        <div className='w-[350px] flex-shrink border-r-2 border-red-700'>
           <TrendsForYou />
         </div>
       </div>

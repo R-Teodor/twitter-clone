@@ -6,9 +6,9 @@ import type { User } from '../features/user/authSlice'
 import { useGetProfileByUserTagQuery } from '../services/user'
 
 const Profile = () => {
-  const [user, setUser] = useState<(User & { isFollowing: boolean }) | null>(
-    null
-  )
+  const [user, setUser] = useState<
+    (User & { isFollowing: boolean; mainProfile: boolean }) | null
+  >(null)
   const { userTag } = useParams()
   const navigate = useNavigate()
   // const { state } = useLocation()
@@ -26,7 +26,16 @@ const Profile = () => {
 
   if (userTag) letter = userTag[0].toUpperCase()
 
-  const handleFollow = async (followId: string | undefined) => {
+  const handleFollow = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    followId: string | undefined
+  ) => {
+    // ###### Need to implement different request logic or send a query with the type of action ex.: follow /unfollow to the backend and let the server process the logic
+    // if (e.currentTarget.textContent == 'Follow') console.log('Lets follow')
+    // if (e.currentTarget.textContent == 'Unfollow') console.log('Lets Unfollow')
+    // if (e.currentTarget.textContent == 'Edit Profile')
+    //   console.log('Lets Change Profile details')
+
     if (!followId) return
     if (!user?.isFollowing) {
       const response = await fetch('http://localhost:4000/api/v1/user/follow', {
@@ -92,9 +101,14 @@ const Profile = () => {
           <div className='flex justify-end pt-3 px-3'>
             <button
               className='py-1 px-5 font-bold border-[1px] border-slate-500 border-opacity-40 rounded-full'
-              onClick={() => handleFollow(data.user?._id)}
+              onClick={(e) => handleFollow(e, data.user?._id)}
             >
-              {data?.user?.isFollowing ? 'Unfollow' : 'Follow'}
+              {data?.user?.isFollowing
+                ? 'Unfollow'
+                : data?.user?.mainProfile
+                ? 'Edit Profile'
+                : 'Follow'}
+              {/* {data?.user?.mainProfile && 'Edit Profile'} */}
             </button>
           </div>
           <div className='pt-10'>
@@ -117,7 +131,7 @@ const Profile = () => {
       </div>
 
       <div>
-        <Outlet context={{ _id: data.user?._id }} />
+        <Outlet context={{ _id: data?.user?._id }} />
       </div>
     </>
   )
