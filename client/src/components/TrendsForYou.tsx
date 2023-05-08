@@ -1,8 +1,82 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { AiOutlineSearch } from 'react-icons/ai'
+import { FaSearch } from 'react-icons/fa'
 import type { User } from '../features/user/authSlice'
 
 type ReturnedUser = Pick<User, '_id' | 'email' | 'name' | 'userTag'>
+interface TrendItem {
+  location: string
+  trend: string
+  tweets: number
+}
+const initialTrendsItems: TrendItem[] = [
+  {
+    location: 'Trending * Technology',
+    trend: 'GPT',
+    tweets: 215,
+  },
+  {
+    location: 'Trending * Technology',
+    trend: 'GPT',
+    tweets: 215,
+  },
+  {
+    location: 'Trending * Technology',
+    trend: 'GPT',
+    tweets: 215,
+  },
+  {
+    location: 'Trending * Technology',
+    trend: 'GPT',
+    tweets: 215,
+  },
+  {
+    location: 'Trending * Technology',
+    trend: 'GPT',
+    tweets: 215,
+  },
+  {
+    location: 'Trending * Technology',
+    trend: 'GPT',
+    tweets: 215,
+  },
+  {
+    location: 'Trending * Technology',
+    trend: 'GPT',
+    tweets: 215,
+  },
+  {
+    location: 'Trending * Technology',
+    trend: 'GPT',
+    tweets: 215,
+  },
+  {
+    location: 'Trending * Technology',
+    trend: 'GPT',
+    tweets: 215,
+  },
+  {
+    location: 'Trending * Technology',
+    trend: 'GPT',
+    tweets: 215,
+  },
+]
+
+const initialUsersToFollow: ReturnedUser[] = [
+  {
+    _id: '123214331',
+    email: 'null',
+    userTag: 'kyoko99',
+    name: 'kyokoSan',
+  },
+  {
+    _id: '123214331',
+    email: 'null',
+    userTag: 'kyoko99',
+    name: 'kyokoSan',
+  },
+]
 
 const TrendsForYou = () => {
   const [searchInput, setSearchInput] = useState('')
@@ -10,6 +84,7 @@ const TrendsForYou = () => {
   const [toggleDropdownMenu, setToggleDropdownMenu] = useState(true)
   const dropDownRef = useRef<HTMLDivElement>(null)
 
+  // #### Handle Here the recommended search state
   const handleSearch = async (query: string) => {
     if (!query) return setSearchData([])
     const response = await fetch('http://localhost:4000/api/v1/user/search', {
@@ -56,30 +131,46 @@ const TrendsForYou = () => {
 
   return (
     <div className='flex flex-col'>
-      <div className='h-14 w-full'>
+      <div className='h-16 w-full'>
         <div className='fixed top-2 w-[350px] ' ref={dropDownRef}>
-          <input
-            type='search'
-            name=''
-            id=''
-            className='peer px-6 py-3 w-full text-gray-300 bg-gray-700 rounded-3xl'
-            placeholder='Search Twitter'
-            value={searchInput}
-            onChange={optimizedDebounce}
-            onFocus={() => setToggleDropdownMenu(false)}
-            // onBlur={() => setToggleDropdownMenu(true)}
-          />
+          <div className='flex items-center relative w-full bg-gray-700 rounded-3xl border-[1px] border-transparent focus-within:border-[#1D9BF0] focus-within:bg-[#15202B] box-border'>
+            <label htmlFor='queryDB' className='pl-4'>
+              <AiOutlineSearch size={24} />
+            </label>
 
+            <input
+              type='search'
+              name=''
+              id='queryDB'
+              className='peer px-6 py-2 w-full text-gray-300  rounded-3xl outline-none bg-transparent'
+              placeholder='Search Twitter'
+              autoComplete='off'
+              value={searchInput}
+              onChange={optimizedDebounce}
+              onFocus={() => setToggleDropdownMenu(false)}
+              // onBlur={() => setToggleDropdownMenu(true)}
+            />
+          </div>
           {/* rgba(136, 153, 166, 0.2) 0px 0px 15px, rgba(136, 153, 166, 0.15) 0px 0px 3px 1px; */}
           {/* shadow-[0px_0px_3px_1px_rgba(136, 153, 166, 0.15)] */}
           <div
             hidden={toggleDropdownMenu}
-            className='bg-black mt-2 py-6 px-4 rounded-3xl box-content w-full 
+            className='bg-[#15202B] min-h-[72px]  pb-4  rounded-xl box-content w-full 
             shadow-[0_0_15px_rgba(136,153,166,0.2),0_0_3px_1px_rgba(136,153,166,0.15)]
             
             '
           >
-            {searchInput ? searchInput : 'Try searching for etc..'}
+            {searchInput ? (
+              <>
+                <RecommendedSearchComponent text={searchInput} />
+                <RecommendedSearchComponent text={`${searchInput} profile1`} />
+                <RecommendedSearchComponent text={`${searchInput} profile2`} />
+              </>
+            ) : (
+              <div className='py-6 px-8'>
+                Try searching for people, topics, or keywords
+              </div>
+            )}
             {searchData?.map((user) => {
               return (
                 <Link
@@ -91,61 +182,56 @@ const TrendsForYou = () => {
                 </Link>
               )
             })}
+            {searchInput ? (
+              <RecommendedSearchComponent text={`Go to @${searchInput}`} />
+            ) : null}
           </div>
         </div>
       </div>
-      <section className=' bg-gray-700/25  rounded-3xl'>
-        <h1 className='font-bold text-2xl '>Trends for You</h1>
-        <main className='flex flex-col gap-2 '>
-          <article>
-            <p>Trending in Romania</p>
-            <h2>Anna</h2>
-            <p>116K Tweets</p>
-          </article>
-          <article>
-            <p>Trending * Technology</p>
-            <h2>GPT</h2>
-            <p>216K Tweets</p>
-          </article>
-          <article>
-            <p>Trending * Technology</p>
-            <h2>GPT</h2>
-            <p>216K Tweets</p>
-          </article>
-          <article>
-            <p>Trending * Technology</p>
-            <h2>GPT</h2>
-            <p>216K Tweets</p>
-          </article>
-          <article>
-            <p>Trending * Technology</p>
-            <h2>GPT</h2>
-            <p>216K Tweets</p>
-          </article>
-          <article>
-            <p>Trending * Technology</p>
-            <h2>GPT</h2>
-            <p>216K Tweets</p>
-          </article>
-          <article>
-            <p>Trending * Technology</p>
-            <h2>GPT</h2>
-            <p>216K Tweets</p>
-          </article>
-          <article>
-            <p>Trending * Technology</p>
-            <h2>GPT</h2>
-            <p>216K Tweets</p>
-          </article>
+      <section className='bg-[rgb(30,39,50)] border border-[#1e2732] rounded-2xl'>
+        <h1 className='font-bold text-xl py-2 px-4'>Trends for You</h1>
+        <main className='flex flex-col'>
+          {initialTrendsItems.map((trend, index) => (
+            <TrendItemComponent trendItem={trend} key={index} />
+          ))}
         </main>
       </section>
+      <section className='py-4'>
+        <article className='bg-[rgb(30,39,50)] border border-[#1e2732] rounded-2xl'>
+          <h1 className='font-bold text-xl py-2 px-4'>Who to Follow</h1>
+          <div>
+            {initialUsersToFollow.map((user) => (
+              <a href='#'>
+                <ReturnedUserComponent user={user} key={user._id} />
+              </a>
+            ))}
+          </div>
+          <div className='hover:bg-[rgba(30,39,50,0.95)]'>
+            <p>Show More</p>
+          </div>
+        </article>
+      </section>
+    </div>
+  )
+}
+
+const RecommendedSearchComponent = ({ text }: { text: string }) => {
+  return (
+    <div className='flex items-center gap-4 py-2 px-4 cursor-pointer hover:bg-[rgba(30,39,50,0.95)]'>
+      <div className='flex items-center justify-center w-14 h-14'>
+        <FaSearch size={32} />
+      </div>
+
+      <div>
+        <p>{text}</p>
+      </div>
     </div>
   )
 }
 
 const ReturnedUserComponent = ({ user }: { user: ReturnedUser }) => {
   return (
-    <div className='flex items-center gap-4 pt-4'>
+    <div className='flex items-center gap-4 py-2 px-4 hover:bg-[rgba(30,39,50,0.95)]'>
       <div className='w-14 h-14 overflow-hidden rounded-full'>
         <img src='https://placehold.co/100x100' alt='' className='w-full' />
       </div>
@@ -154,6 +240,19 @@ const ReturnedUserComponent = ({ user }: { user: ReturnedUser }) => {
         <p>{user.userTag}</p>
       </div>
     </div>
+  )
+}
+
+const TrendItemComponent = ({ trendItem }: { trendItem: TrendItem }) => {
+  return (
+    <article className='flex flex-col justify-center px-4 py-3 hover:bg-gray-700/25  cursor-pointer duration-150'>
+      <div className='flex justify-between text-gray-400/80  text-[13px]'>
+        <p>{trendItem.location}</p>
+        <span>...</span>
+      </div>
+      <h2 className='font-bold'>{trendItem.trend}</h2>
+      <p className='text-gray-400/75 text-[13px]'>{trendItem.tweets}K Tweets</p>
+    </article>
   )
 }
 export default TrendsForYou

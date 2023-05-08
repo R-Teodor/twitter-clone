@@ -23,7 +23,7 @@ const MainContent = () => {
             <Outlet />
           </div>
         </div>
-        <div className='w-[350px] flex-shrink border-r-2 border-red-700'>
+        <div className='w-[350px] flex-shrink'>
           <TrendsForYou />
         </div>
       </div>

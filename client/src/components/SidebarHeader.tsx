@@ -185,8 +185,8 @@ const SidebarHeader = ({ userTag }: AppProps) => {
 }
 
 const initialReq = {
-  email: 'teodor@gmail.com',
-  password: '',
+  email: '',
+  password: 'secret1234',
 }
 const SelectUserComponent = () => {
   const dispatch = useDispatch<AppDispatch>()
