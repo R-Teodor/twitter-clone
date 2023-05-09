@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import authReducer from '../features/user/authSlice'
 import tweetReducer from '../features/tweets/tweetSlice'
+import layerReducer from '../features/layers/layerSlice'
 
 import { setupListeners } from '@reduxjs/toolkit/query'
 import { threadApi } from '../services/threads'
@@ -12,6 +13,7 @@ export const store = configureStore({
     [threadApi.reducerPath]: threadApi.reducer,
     auth: authReducer,
     tweet: tweetReducer,
+    layer: layerReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(threadApi.middleware, userApi.middleware),
