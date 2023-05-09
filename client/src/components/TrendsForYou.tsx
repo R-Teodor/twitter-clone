@@ -68,19 +68,19 @@ const initialTrendsItems: TrendItem[] = [
 
 const initialUsersToFollow: ReturnedUser[] = [
   {
-    _id: '123211234331',
+    _id: '123211124775234331',
     email: 'null',
     userTag: 'kyoko99',
     name: 'kyokoSan',
   },
   {
-    _id: '1232424331',
+    _id: '12324213655474331',
     email: 'null',
     userTag: 'rupet_T-On',
     name: 'Ruptert Don Mano',
   },
   {
-    _id: '123214331',
+    _id: '123214332323231',
     email: 'null',
     userTag: 'simson_zzz',
     name: 'Sampo',
@@ -175,9 +175,15 @@ const TrendsForYou = () => {
           >
             {searchInput ? (
               <>
-                <RecommendedSearchComponent text={searchInput} />
-                <RecommendedSearchComponent text={`${searchInput} profile1`} />
-                <RecommendedSearchComponent text={`${searchInput} profile2`} />
+                <RecommendedSearchComponent text={searchInput} key={9999} />
+                <RecommendedSearchComponent
+                  text={`${searchInput} profile1`}
+                  key={999912}
+                />
+                <RecommendedSearchComponent
+                  text={`${searchInput} profile2`}
+                  key={9929429925}
+                />
               </>
             ) : (
               <div className='py-6 px-8'>
@@ -217,8 +223,8 @@ const TrendsForYou = () => {
           <h1 className='font-bold text-xl py-2 px-4'>Who to Follow</h1>
           <div>
             {initialUsersToFollow.map((user) => (
-              <a href='#'>
-                <WhoToFollowItem user={user} key={user._id} />
+              <a href='#' key={user._id}>
+                <WhoToFollowItem user={user} />
               </a>
             ))}
           </div>

@@ -1,9 +1,11 @@
 import { useParams, Outlet, NavLink, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-// import { useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import type { User } from '../features/user/authSlice'
 // import { RootState } from '../app/store'
 import { useGetProfileByUserTagQuery } from '../services/user'
+import { AppDispatch } from '../app/store'
+import { toggleProfileModal } from '../features/layers/layerSlice'
 
 const Profile = () => {
   const [user, setUser] = useState<
@@ -11,13 +13,14 @@ const Profile = () => {
   >(null)
   const { userTag } = useParams()
   const navigate = useNavigate()
+  const dispatch = useDispatch<AppDispatch>()
   // const { state } = useLocation()
   // const userDetails = useSelector((state: RootState) => state.auth)
   // console.log(userDetails)
   const { data, isLoading, error } = useGetProfileByUserTagQuery(
     userTag as string
   )
-  console.log('RTK GET PROFILE : ', data)
+  // console.log('RTK GET PROFILE : ', data)
 
   // console.log('isloading :', isLoading)
 
@@ -109,6 +112,9 @@ const Profile = () => {
                 ? 'Edit Profile'
                 : 'Follow'}
               {/* {data?.user?.mainProfile && 'Edit Profile'} */}
+            </button>
+            <button onClick={() => dispatch(toggleProfileModal('Open'))}>
+              EditProfile
             </button>
           </div>
           <div className='pt-10'>

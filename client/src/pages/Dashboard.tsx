@@ -5,9 +5,13 @@ import { useEffect } from 'react'
 import { checkLoginState } from '../features/user/authSlice'
 import type { AppDispatch, RootState } from '../app/store'
 import { useState } from 'react'
+import { EditProfile } from '../components/ProfileContent/EditProfile'
 
 const Dashboard = () => {
   const id = useSelector((state: RootState) => state.auth.userTag)
+  const isOpenProfile = useSelector(
+    (state: RootState) => state.layer.profileModal.isOpen
+  )
   const loading = useSelector((state: RootState) => state.auth.loading)
   const dispatch = useDispatch<AppDispatch>()
   const [openModal, setOpenModal] = useState<boolean>(true)
@@ -28,6 +32,7 @@ const Dashboard = () => {
   return (
     <div className='text-white flex min-h-screen '>
       {/* <Modal visible={openModal} setState={setOpenModal} /> */}
+      <EditProfile isOpen={isOpenProfile} />
       <SidebarHeader userTag={id} />
       <MainContent />
     </div>
