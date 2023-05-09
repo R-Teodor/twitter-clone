@@ -24,8 +24,16 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<Dashboard />}>
-            <Route index element={<Home />} />
+            <Route
+              index
+              element={
+                <ProtectedRoute>
+                  <Home />
+                </ProtectedRoute>
+              }
+            />
             <Route path='explore' element={<Explore />} />
+
             <Route
               path='notifications'
               element={

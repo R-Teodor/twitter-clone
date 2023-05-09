@@ -46,14 +46,15 @@ function TweetInputComponent({
             onChange={(e) => setState(e.target.value)}
           />
         </div>
-        <div className='px-6 py-4 w-full h-full'>
-          {file && (
+
+        {file && (
+          <div className='px-6 py-4 w-full h-full'>
             <img
               src={URL.createObjectURL(file)}
               className='object-cover w-full h-full'
             />
-          )}
-        </div>
+          </div>
+        )}
       </div>
       <div className='flex justify-between pr-5 pl-20'>
         <nav className='flex gap-4 text-blue-400'>
@@ -68,25 +69,25 @@ function TweetInputComponent({
             onChange={handleFileInput}
           />
 
-          <span>
+          <span className='cursor-pointer'>
             <HiGif size={20} />
           </span>
           {componentType == 'Tweet' && (
-            <span>
+            <span className='cursor-pointer'>
               <HiChartBar size={20} />
             </span>
           )}
 
-          <span>
+          <span className='cursor-pointer'>
             <HiEmojiHappy size={20} />
           </span>
           {componentType == 'Tweet' && (
-            <span>
+            <span className='cursor-pointer'>
               <HiCalendar size={20} />
             </span>
           )}
 
-          <span aria-disabled={true}>
+          <span aria-disabled={true} className='cursor-pointer'>
             <HiLocationMarker size={20} />
           </span>
         </nav>

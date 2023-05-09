@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AiOutlineSearch } from 'react-icons/ai'
+import { IoEllipsisHorizontal } from 'react-icons/io5'
 import { FaSearch } from 'react-icons/fa'
 import type { User } from '../features/user/authSlice'
+
+import WhoToFollowItem from './Trends/WhoToFollowItem'
 
 type ReturnedUser = Pick<User, '_id' | 'email' | 'name' | 'userTag'>
 interface TrendItem {
@@ -65,16 +68,22 @@ const initialTrendsItems: TrendItem[] = [
 
 const initialUsersToFollow: ReturnedUser[] = [
   {
-    _id: '123214331',
+    _id: '123211234331',
     email: 'null',
     userTag: 'kyoko99',
     name: 'kyokoSan',
   },
   {
+    _id: '1232424331',
+    email: 'null',
+    userTag: 'rupet_T-On',
+    name: 'Ruptert Don Mano',
+  },
+  {
     _id: '123214331',
     email: 'null',
-    userTag: 'kyoko99',
-    name: 'kyokoSan',
+    userTag: 'simson_zzz',
+    name: 'Sampo',
   },
 ]
 
@@ -132,7 +141,11 @@ const TrendsForYou = () => {
   return (
     <div className='flex flex-col'>
       <div className='h-16 w-full'>
-        <div className='fixed top-2 w-[350px] ' ref={dropDownRef}>
+        <div
+          className='fixed top-0 w-[350px] py-2 z-10 bg-[#15202B]'
+          // className='fixed top-2 w-[350px]'
+          ref={dropDownRef}
+        >
           <div className='flex items-center relative w-full bg-gray-700 rounded-3xl border-[1px] border-transparent focus-within:border-[#1D9BF0] focus-within:bg-[#15202B] box-border'>
             <label htmlFor='queryDB' className='pl-4'>
               <AiOutlineSearch size={24} />
@@ -188,29 +201,34 @@ const TrendsForYou = () => {
           </div>
         </div>
       </div>
-      <section className='bg-[rgb(30,39,50)] border border-[#1e2732] rounded-2xl'>
+      <section className='bg-[rgb(30,39,50)] border border-[#1e2732] rounded-2xl overflow-hidden'>
         <h1 className='font-bold text-xl py-2 px-4'>Trends for You</h1>
         <main className='flex flex-col'>
           {initialTrendsItems.map((trend, index) => (
             <TrendItemComponent trendItem={trend} key={index} />
           ))}
+          <div className='hover:bg-gray-700/25 cursor-pointer text-[rgb(29,155,240)]'>
+            <p className='px-4 py-3 '>Show More</p>
+          </div>
         </main>
       </section>
       <section className='py-4'>
-        <article className='bg-[rgb(30,39,50)] border border-[#1e2732] rounded-2xl'>
+        <article className='bg-[rgb(30,39,50)] border border-[#1e2732] rounded-2xl overflow-hidden'>
           <h1 className='font-bold text-xl py-2 px-4'>Who to Follow</h1>
           <div>
             {initialUsersToFollow.map((user) => (
               <a href='#'>
-                <ReturnedUserComponent user={user} key={user._id} />
+                <WhoToFollowItem user={user} key={user._id} />
               </a>
             ))}
           </div>
-          <div className='hover:bg-[rgba(30,39,50,0.95)]'>
-            <p>Show More</p>
+          <div className='hover:bg-gray-700/25 cursor-pointer text-[rgb(29,155,240)]'>
+            <p className='px-4 py-3 '>Show More</p>
           </div>
         </article>
       </section>
+
+      <section className='h-14 py-10'></section>
     </div>
   )
 }
@@ -245,12 +263,17 @@ const ReturnedUserComponent = ({ user }: { user: ReturnedUser }) => {
 
 const TrendItemComponent = ({ trendItem }: { trendItem: TrendItem }) => {
   return (
-    <article className='flex flex-col justify-center px-4 py-3 hover:bg-gray-700/25  cursor-pointer duration-150'>
+    <article className='flex flex-col justify-center px-4 py-[10px] hover:bg-gray-700/25  cursor-pointer duration-150'>
       <div className='flex justify-between text-gray-400/80  text-[13px]'>
         <p>{trendItem.location}</p>
-        <span>...</span>
+        <div className='w-9 relative flex justify-center items-center group'>
+          <div className='h-9 w-9 bg-[rgba(29,155,240,0.3)] opacity-25 justify-center items-center absolute top-0 left-0 bottom-0 right-0 m-auto invisible group-hover:visible rounded-full'></div>
+          <div className='group-hover:text-[rgb(29,155,240)]'>
+            <IoEllipsisHorizontal size={18} />
+          </div>
+        </div>
       </div>
-      <h2 className='font-bold'>{trendItem.trend}</h2>
+      <h2 className='font-bold text-[15px]'>{trendItem.trend}</h2>
       <p className='text-gray-400/75 text-[13px]'>{trendItem.tweets}K Tweets</p>
     </article>
   )

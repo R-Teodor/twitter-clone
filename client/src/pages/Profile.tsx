@@ -121,11 +121,59 @@ const Profile = () => {
             </p>
           </div>
 
-          <div className='flex flex-row gap-4 justify-center'>
-            <NavLink to={''}>Tweets</NavLink>
-            <NavLink to={'with_replies'}>Replies</NavLink>
-            <NavLink to={'media'}>Media</NavLink>
-            <NavLink to={'likes'}>Likes</NavLink>
+          <div className='flex flex-row w-full border-b-[1px] border-slate-500 border-opacity-40 text-lg text-[rgb(139,152,165)] '>
+            <NavLink to={''} className={'flex-1'} end>
+              {({ isActive }) => (
+                <span
+                  className={
+                    isActive
+                      ? 'py-4 px-6 flex justify-center items-center relative before:w-full  before:h-1 before:bg-[rgb(28,155,240)] before:absolute  before:-bottom-0  before:rounded-md font-bold text-white'
+                      : 'py-4 px-6 flex justify-center items-center'
+                  }
+                >
+                  Tweets
+                </span>
+              )}
+            </NavLink>
+            <NavLink to={'with_replies'} className={'flex-1'}>
+              {({ isActive }) => (
+                <span
+                  className={
+                    isActive
+                      ? 'py-4 px-6 flex justify-center items-center relative before:w-full  before:h-1 before:bg-[rgb(28,155,240)] before:absolute  before:-bottom-0  before:rounded-md font-bold text-white'
+                      : 'py-4 px-6 flex justify-center items-center'
+                  }
+                >
+                  Replies
+                </span>
+              )}
+            </NavLink>
+            <NavLink to={'media'} className={'flex-1'}>
+              {({ isActive }) => (
+                <span
+                  className={
+                    isActive
+                      ? 'py-4 px-6 flex justify-center items-center relative before:w-full  before:h-1 before:bg-[rgb(28,155,240)] before:absolute  before:-bottom-0  before:rounded-md font-bold text-white'
+                      : 'py-4 px-6 flex justify-center items-center'
+                  }
+                >
+                  Media
+                </span>
+              )}
+            </NavLink>
+            <NavLink to={'likes'} className={'flex-1'}>
+              {({ isActive }) => (
+                <span
+                  className={
+                    isActive
+                      ? 'py-4 px-6 flex justify-center items-center relative before:w-full  before:h-1 before:bg-[rgb(28,155,240)] before:absolute  before:-bottom-0  before:rounded-md font-bold text-white'
+                      : 'py-4 px-6 flex justify-center items-center'
+                  }
+                >
+                  Likes
+                </span>
+              )}
+            </NavLink>
           </div>
         </div>
       </div>

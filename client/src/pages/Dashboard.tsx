@@ -16,7 +16,12 @@ const Dashboard = () => {
     if (!id) {
       dispatch(checkLoginState())
     }
-  }, [id])
+    // if (openModal) {
+    //   document.body.style.overflow = 'hidden'
+    // } else {
+    //   document.body.style.overflow = 'auto'
+    // }
+  }, [id, openModal])
 
   if (loading == 'loading')
     return <div className='text-5xl text-red-600'>Loading Time.....</div>
