@@ -22,9 +22,10 @@ export interface Thread {
 }
 export interface ReturnThread extends Omit<Thread, 'author'> {
   author: {
-    _id?: String
-    name: String
-    userTag: String
+    _id?: string
+    name: string
+    userTag: string
+    avatarURL: string
   }
 }
 

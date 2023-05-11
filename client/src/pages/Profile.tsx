@@ -1,8 +1,8 @@
 import { useParams, Outlet, NavLink, useNavigate } from 'react-router-dom'
-import { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import type { User } from '../features/user/authSlice'
-// import { RootState } from '../app/store'
+import { RootState } from '../app/store'
 import { useGetProfileByUserTagQuery } from '../services/user'
 import { AppDispatch } from '../app/store'
 import { toggleProfileModal } from '../features/layers/layerSlice'
@@ -15,18 +15,21 @@ const Profile = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch<AppDispatch>()
   // const { state } = useLocation()
-  // const userDetails = useSelector((state: RootState) => state.auth)
-  // console.log(userDetails)
+  const userDetails = useSelector((state: RootState) => state.auth)
+  console.log(userDetails)
   const { data, isLoading, error } = useGetProfileByUserTagQuery(
     userTag as string
   )
-  // console.log('RTK GET PROFILE : ', data)
+  let userProfile = false
+
+  console.log('RTK GET PROFILE : ', data)
 
   // console.log('isloading :', isLoading)
+  if (data && data.user) {
+    userProfile = data.user._id == userDetails._id
+  }
 
   let letter: string = 'P'
-  // console.log(state?._id)
-
   if (userTag) letter = userTag[0].toUpperCase()
 
   const handleFollow = async (
@@ -39,8 +42,11 @@ const Profile = () => {
     // if (e.currentTarget.textContent == 'Edit Profile')
     //   console.log('Lets Change Profile details')
 
+    if (userProfile && e.currentTarget.textContent == 'Edit Profile') {
+      dispatch(toggleProfileModal('Open'))
+    }
     if (!followId) return
-    if (!user?.isFollowing) {
+    if (!data?.user?.isFollowing) {
       const response = await fetch('http://localhost:4000/api/v1/user/follow', {
         method: 'POST',
         body: JSON.stringify({ followId }),
@@ -57,23 +63,6 @@ const Profile = () => {
     console.log('Unfollow boii')
   }
 
-  // useEffect(() => {
-  //   const getQueryProfile = async (_id: string) => {
-  //     const response = await fetch(`http://localhost:4000/api/v1/user/${_id}`, {
-  //       method: 'GET',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       credentials: 'include',
-  //     })
-
-  //     const data = await response.json()
-  //     setUser(data.user)
-  //     console.log(data)
-  //   }
-  //   if (userTag) getQueryProfile(userTag)
-  // }, [userTag])
-
   if (isLoading) return <div>LOADING......</div>
 
   return (
@@ -89,14 +78,20 @@ const Profile = () => {
           <span className='text-xl font-bold'>{user?.name}</span>
           <p className='text-sm'>0 Tweets</p>
         </div>
-        <div className='w-[598px] h-[199px] bg-gray-500'></div>
+        <div className='w-[598px] h-[199px] bg-gray-500'>
+          <img
+            src={data?.user?.bgURL}
+            alt=''
+            className='w-full h-full object-cover object-center'
+          />
+        </div>
         <div className='relative'>
           <div
             className='absolute w-36 h-36 bg-red-700 rounded-full -top-16 left-4 border-[rgb(21,23,26)] 
         border-[4px] flex justify-center items-center overflow-hidden hover:brightness-90 duration-100 cursor-pointer'
           >
             <img
-              src={`https://placehold.co/600x400?text=${letter}`}
+              src={data?.user?.avatarURL}
               alt=''
               className='w-full h-full object-cover object-center'
             />
@@ -106,16 +101,21 @@ const Profile = () => {
               className='py-1 px-5 font-bold border-[1px] border-slate-500 border-opacity-40 rounded-full'
               onClick={(e) => handleFollow(e, data.user?._id)}
             >
-              {data?.user?.isFollowing
+              {userProfile
+                ? 'Edit Profile'
+                : data?.user?.isFollowing
+                ? 'Unfollow'
+                : 'Follow'}
+              {/* {data?.user?.isFollowing
                 ? 'Unfollow'
                 : data?.user?.mainProfile
                 ? 'Edit Profile'
-                : 'Follow'}
+                : 'Follow'} */}
               {/* {data?.user?.mainProfile && 'Edit Profile'} */}
             </button>
-            <button onClick={() => dispatch(toggleProfileModal('Open'))}>
+            {/* <button onClick={() => dispatch(toggleProfileModal('Open'))}>
               EditProfile
-            </button>
+            </button> */}
           </div>
           <div className='pt-10'>
             <p>{data?.user?.name}</p>

@@ -48,7 +48,7 @@ const getTweetsById = async (req, res) => {
 
   const threads = await Thread.find({ author: id })
     .select('-__v')
-    .populate('author', 'name userTag')
+    .populate('author', 'name userTag avatarURL')
     .exec()
 
   res.json(threads)
@@ -62,7 +62,7 @@ const getFollowingThreads = async (req, res) => {
   })
     .limit(10)
     .select('-__v -updatedAt')
-    .populate('author', 'name userTag')
+    .populate('author', 'name userTag avatarURL')
     .exec()
 
   res.json(followedUsersTweets)
@@ -91,7 +91,7 @@ const populateReplyThread = async (req, res) => {
       populate: {
         path: 'author',
         model: 'User',
-        select: 'name userTag',
+        select: 'name userTag avatarURL',
       },
     })
     .populate('parentThread')

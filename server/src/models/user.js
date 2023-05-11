@@ -29,6 +29,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: 'https://placehold.co/450?text=Avatar&font=roboto',
     },
+    bgURL: {
+      type: String,
+      default: 'https://placehold.co/450?text=Avatar&font=roboto',
+    },
     following: {
       type: [mongoose.Types.ObjectId],
       ref: 'User',

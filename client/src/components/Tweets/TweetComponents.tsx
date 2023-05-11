@@ -57,11 +57,12 @@ const TweetComponents = ({ tweet }: TweetComponentProps) => {
       <div className='flex flex-row px-5 py-3 hover:bg-[rgba(247,249,249,0.03)] duration-150 border-b-[1px] border-slate-500 border-opacity-40'>
         <div className='w-12 h-12 overflow-hidden rounded-full flex-shrink-0'>
           <img
-            src='https://placehold.co/100x100'
+            src={tweet.author.avatarURL}
             alt=''
-            className='w-full object-contain object-center'
+            className='w-full h-full object-cover object-center'
           />
         </div>
+
         <div className='w-full pl-3 flex flex-col '>
           <div className='flex flex-row w-full justify-between'>
             <div className='flex flex-row gap-1.5'>

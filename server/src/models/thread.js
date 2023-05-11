@@ -13,7 +13,6 @@ const threadSchema = new mongoose.Schema(
     },
     mediaUrl: {
       type: String,
-      default: 'https://placehold.co/450?text=Hello+World&font=roboto',
     },
     comments: {
       type: [mongoose.Types.ObjectId],

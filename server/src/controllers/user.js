@@ -261,7 +261,7 @@ const getAllUserLikes = async (req, res) => {
       populate: {
         path: 'author',
         model: 'User',
-        select: 'name userTag',
+        select: 'name userTag avatarURL',
       },
     })
     .select('likes')
@@ -270,10 +270,42 @@ const getAllUserLikes = async (req, res) => {
   res.json({ data: likes })
 }
 
+const updateProfile = async function (req, res, next) {
+  const avatarFile = req.files['avatar'][0]
+  const bgFile = req.files['bgImage'][0]
+  const { Name, Location, Bio, Website, BirthDate } = req.body
+
+  const userId = req?.userId
+
+  const user = await User.findById(userId).select('-password')
+
+  const avatarPath = `http://localhost:4000/${avatarFile.fieldname}/${avatarFile.filename}`
+  const bgPath = `http://localhost:4000/${bgFile.fieldname}/${bgFile.filename}`
+
+  user.avatarURL = avatarPath
+  user.bgURL = bgPath
+  user.name = Name
+  user.bio = Bio
+  user.location = Location
+  if (Website) user.website = Website
+  if (BirthDate) user.birthDate = BirthDate
+  await user.save()
+  // res.json({
+  //   avatarPath:
+  // })
+  console.log(req.body)
+
+  res.json({
+    avatarPath,
+    bgPath,
+  })
+}
+
 module.exports = {
   searchAsTyped,
   testIndex,
   followUser,
   getUserProfile,
   getAllUserLikes,
+  updateProfile,
 }

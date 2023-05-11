@@ -3,10 +3,11 @@ import { AppDispatch } from '../../app/store'
 import { toggleProfileModal } from '../../features/layers/layerSlice'
 import { useState, useEffect } from 'react'
 import { MdOutlineAddAPhoto } from 'react-icons/md'
+import axios from 'axios'
 
 const initialState = {
-  backgroundImage: new File([''], 'filename'),
-  avatarImage: new File([''], 'filename'),
+  bgImage: new File([''], 'filename'),
+  avatar: new File([''], 'filename'),
   Name: 'Jenkins',
   Bio: 'A hardworking boi',
   Location: '31 State Avenu, Los Angeles',
@@ -20,9 +21,39 @@ export const EditProfile = ({ isOpen }: { isOpen: boolean }) => {
 
   const handleImgInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.id == 'backgroundImage' && e.target.files)
-      setProfile({ ...profile, backgroundImage: e.target.files[0] })
+      setProfile({ ...profile, bgImage: e.target.files[0] })
     else if (e.target.id == 'avatarImage' && e.target.files)
-      setProfile({ ...profile, avatarImage: e.target.files[0] })
+      setProfile({ ...profile, avatar: e.target.files[0] })
+  }
+
+  const handleMultiform = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    const dataForm = new FormData()
+
+    // if (profile.avatar) dataForm.append('avatar', profile.avatar)
+    // if (profile.bgImage) dataForm.append('bgImage', profile.bgImage)
+
+    Object.keys(profile).forEach((key) =>
+      dataForm.append(key, profile[key as keyof typeof profile])
+    )
+    for (var pair of dataForm.entries()) {
+      console.log(pair[0] + '  ' + pair[1])
+    }
+
+    const { data } = await axios.post(
+      'http://localhost:4000/api/v1/user/edit',
+      dataForm,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        withCredentials: true,
+      }
+    )
+
+    console.log(data)
+    dispatch(toggleProfileModal('Close'))
   }
 
   useEffect(() => {
@@ -40,7 +71,7 @@ export const EditProfile = ({ isOpen }: { isOpen: boolean }) => {
       className={`flex justify-center items-center fixed top-0  left-0 w-full h-full bg-[rgba(91,112,131,0.4)] z-50 
     ${isOpen ? 'block' : 'hidden'}`}
     >
-      <div className='h-[650px] w-[600px] overflow-hidden rounded-2xl'>
+      <div className='max-h-[650px] h-full w-[600px] overflow-hidden rounded-2xl'>
         <div className='flex flex-col w-full h-full relative bg-[rgba(21,32,43,1.00)]  overflow-y-scroll  rounded-b-2xl '>
           <header className='flex justify-between px-3 py-1 bg-[rgba(21,32,43,0.75)] backdrop-blur-lg sticky top-0 z-10'>
             <div>
@@ -53,7 +84,10 @@ export const EditProfile = ({ isOpen }: { isOpen: boolean }) => {
               <h1 className='inline-block pl-6'>Edit Profile</h1>
             </div>
 
-            <button className='bg-white p-2 text-black rounded-2xl'>
+            <button
+              className='bg-white p-2 text-black rounded-2xl'
+              onClick={handleMultiform}
+            >
               Save
             </button>
           </header>
@@ -76,10 +110,10 @@ export const EditProfile = ({ isOpen }: { isOpen: boolean }) => {
                     onChange={handleImgInput}
                   />
 
-                  {profile.backgroundImage && (
+                  {profile.bgImage && (
                     <div className='w-full h-full overflow-hidden'>
                       <img
-                        src={URL.createObjectURL(profile.backgroundImage)}
+                        src={URL.createObjectURL(profile.bgImage)}
                         alt=''
                         className='w-full h-full object-cover'
                         loading='lazy'
@@ -105,10 +139,10 @@ export const EditProfile = ({ isOpen }: { isOpen: boolean }) => {
                       className='hidden'
                       onChange={handleImgInput}
                     />
-                    {profile.avatarImage && (
+                    {profile.avatar && (
                       <div className='w-full h-full bg-red-500'>
                         <img
-                          src={URL.createObjectURL(profile.avatarImage)}
+                          src={URL.createObjectURL(profile.avatar)}
                           alt=''
                           className='w-full h-full object-cover'
                           loading='lazy'
