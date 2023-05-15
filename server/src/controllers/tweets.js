@@ -4,6 +4,19 @@ const User = require('../models/user')
 const Unauthorized = require('../errors/unauthorized')
 const { BadRequest } = require('../errors')
 
+const multer = require('multer')
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const dir = 'uploads/media'
+    cb(null, dir)
+  },
+  filename: function (req, file, cb) {
+    const fileName = `${req?.userId}-` + file.originalname
+    cb(null, fileName)
+  },
+})
+const upload = multer({ storage: storage })
+
 const createTweet = async (req, res) => {
   const { author, content, replied } = req.body
   const tweet = { author, content }
@@ -29,7 +42,12 @@ const getTweets = async (req, res) => {
 // ###############
 
 const postThread = async (req, res) => {
-  const thread = req.body
+  const thread = {
+    ...req.body,
+    author: req.userId,
+    mediaUrl: `http://localhost:4000/media/${req.file.filename}`,
+  }
+
   const createdThread = await Thread.create(thread)
 
   res.json({ thread: createdThread })
@@ -71,7 +89,7 @@ const getFollowingThreads = async (req, res) => {
 const postReplyThread = async (req, res) => {
   const tweetId = req.params.tweetId
   const foundTweet = await Thread.findById(tweetId)
-  const thread = { ...req.body, parentThread: tweetId }
+  const thread = { ...req.body, parentThread: tweetId, author: req.userId }
   let finalTweetResponse
 
   if (foundTweet) {
@@ -167,4 +185,5 @@ module.exports = {
   populateReplyThread,
   getAllUserReplies,
   favoriteThread,
+  upload,
 }

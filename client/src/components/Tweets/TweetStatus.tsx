@@ -17,28 +17,11 @@ import {
 function StatusTest() {
   const { userTag, tweetId } = useParams()
   const { state } = useLocation()
-  const [commentInput, setCommentInput] = useState('')
+
   const [comments, setComments] = useState<any[] | undefined>([])
-  const [stateData, setStateData] = useState<ReturnThread>()
-  // const [comments, setComments] = useState<ReturnThread[]>([])
   const user = useSelector((state: RootState) => state.auth)
-  // console.log(user)
-  // console.log(state)
 
   const navigate = useNavigate()
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const { data } = await axios.post(
-      `http://localhost:4000/api/v1/tweet/replythread/${tweetId}`,
-      {
-        author: user._id,
-        content: commentInput,
-      },
-      { withCredentials: true }
-    )
-    console.log(data)
-  }
 
   useEffect(() => {
     const populateCommentSection = async () => {
@@ -48,7 +31,6 @@ function StatusTest() {
       )
       console.log(data)
       setComments(data.comments)
-      setStateData(data)
     }
 
     if (!state)
@@ -130,16 +112,9 @@ function StatusTest() {
         </div>
       </header>
 
-      <form
-        className='pl-4 border-b-[1px] border-t-[1px] border-slate-500 border-opacity-40'
-        onSubmit={handleSubmit}
-      >
-        <TweetInputComponent
-          componentType={'Reply'}
-          setState={setCommentInput}
-          state={commentInput}
-        />
-      </form>
+      <div className='pl-4 border-b-[1px] border-t-[1px] border-slate-500 border-opacity-40'>
+        <TweetInputComponent componentType={'Reply'} tweetId={tweetId} />
+      </div>
       <div>
         {comments?.map((item) => (
           <TweetComponents tweet={item} key={item._id} />

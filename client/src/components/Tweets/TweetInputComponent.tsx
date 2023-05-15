@@ -1,26 +1,49 @@
 import { HiGif, HiCalendar, HiPhoto } from 'react-icons/hi2'
 import { HiEmojiHappy, HiChartBar, HiLocationMarker } from 'react-icons/hi'
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { createTweetThread } from '../../features/tweets/tweetSlice'
+import type { AppDispatch } from '../../app/store'
+import axios from 'axios'
 
 export type InputType = 'Tweet' | 'Reply'
 type ComponentProps = {
   componentType: InputType
-
-  state: string
-  setState: React.Dispatch<React.SetStateAction<string>>
+  tweetId?: string | undefined
 }
 
-function TweetInputComponent({
-  componentType,
-  state,
-  setState,
-}: ComponentProps) {
+function TweetInputComponent({ componentType, tweetId }: ComponentProps) {
   const [file, setFile] = useState<File>()
+  const [textareaField, setTextareaField] = useState('')
+
+  const dispatch = useDispatch<AppDispatch>()
 
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log(e.target.files)
     if (e.target.files) {
       setFile(e.target.files[0])
+    }
+  }
+
+  const handleReplySubmit = async () => {
+    const { data } = await axios.post(
+      `http://localhost:4000/api/v1/tweet/replythread/${tweetId}`,
+      {
+        content: textareaField,
+      },
+      { withCredentials: true }
+    )
+    console.log(data)
+  }
+
+  const handleSubmit = async () => {
+    const thread = {
+      content: textareaField,
+      media: file,
+    }
+    if (componentType == 'Tweet') await dispatch(createTweetThread(thread))
+    if (componentType == 'Reply') {
+      await handleReplySubmit()
     }
   }
   return (
@@ -42,8 +65,8 @@ function TweetInputComponent({
             className='text-2xl bg-transparent outline-none flex-grow flex-shrink-0 resize-none '
             rows={2}
             maxLength={245}
-            value={state}
-            onChange={(e) => setState(e.target.value)}
+            value={textareaField}
+            onChange={(e) => setTextareaField(e.target.value)}
           />
         </div>
 
@@ -92,7 +115,10 @@ function TweetInputComponent({
           </span>
         </nav>
 
-        <button className='bg-[#1D9BF0] font-bold rounded-3xl py-1.5 px-4'>
+        <button
+          className='bg-[#1D9BF0] font-bold rounded-3xl py-1.5 px-4'
+          onClick={handleSubmit}
+        >
           {componentType == 'Tweet' ? 'Tweet' : 'Reply'}
         </button>
       </div>

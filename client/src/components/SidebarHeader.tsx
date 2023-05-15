@@ -211,7 +211,7 @@ const SelectUserComponent = () => {
         className='text-slate-900 mt-6'
         onChange={handleSelectState}
       >
-        <option value='teodor@gmail.com'>Toader</option>
+        <option value=''>Toader</option>
         <option value='ghabard0@skype.com'>Gerhardt</option>
         <option value='rkorn1@salon.com'>Rora</option>
         <option value='lemm2@google.cn'>Lorne</option>

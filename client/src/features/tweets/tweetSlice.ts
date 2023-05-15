@@ -10,10 +10,10 @@ export interface TweetState {
 export interface Thread {
   author: string
   content: string
-  mediaUrl: string
+  mediaUrl?: string
   comments?: any[]
   _id: string
-  createdAt: string
+  createdAt?: string
   updatedAt?: string
   parentThread?: string
   retweets?: number
@@ -32,6 +32,7 @@ export interface ReturnThread extends Omit<Thread, 'author'> {
 type Tweet = {
   author?: string
   content: string
+  media?: File
 }
 
 // "author": "6424677936d980f7fbd2c21d",
@@ -60,18 +61,34 @@ export const createTweetThread = createAsyncThunk<
 >('tweet/create', async (tweet, thunkAPI) => {
   try {
     const userId = thunkAPI.getState().auth._id
-    if (!userId) thunkAPI.rejectWithValue('no id')
-    const completedTweet: Tweet = { ...tweet, author: userId }
+    if (!userId) thunkAPI.rejectWithValue('Not Authenticated id')
+    // const completedTweet: Tweet = { ...tweet }
 
-    const response = await fetch('http://localhost:4000/api/v1/tweet/thread', {
-      method: 'POST',
-      body: JSON.stringify(completedTweet),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    })
-    const data = await response.json()
+    const dataForm = new FormData()
+
+    dataForm.append('content', tweet.content)
+    if (tweet.media) dataForm.append('media', tweet.media)
+
+    const { data } = await axios.post(
+      'http://localhost:4000/api/v1/tweet/thread',
+      dataForm,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        withCredentials: true,
+      }
+    )
+
+    // const response = await fetch('http://localhost:4000/api/v1/tweet/thread', {
+    //   method: 'POST',
+    //   body: JSON.stringify(completedTweet),
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   credentials: 'include',
+    // })
+    // const data = await response.json()
     console.log('This is the returned data from Create Tweet EndPoint', data)
     return data
   } catch (error) {
@@ -114,7 +131,7 @@ export const tweetSlice = createSlice({
       .addCase(createTweetThread.fulfilled, (state, action) => {
         console.log(action.payload)
 
-        state.personalTweets.push(action.payload.thread)
+        // state.personalTweets.push(action.payload.thread)
       })
       .addCase(getTweets.fulfilled, (state, action) => {
         state.tweets = action.payload

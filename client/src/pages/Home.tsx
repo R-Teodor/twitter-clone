@@ -1,11 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import TweetComponents from '../components/Tweets/TweetComponents'
-import { HiGif, HiCalendar, HiPhoto } from 'react-icons/hi2'
-import { HiEmojiHappy, HiChartBar, HiLocationMarker } from 'react-icons/hi'
-import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch, RootState } from '../app/store'
-import { createTweetThread } from '../features/tweets/tweetSlice'
 import axios from 'axios'
 import type { ReturnThread } from '../features/tweets/tweetSlice'
 import TweetInputComponent from '../components/Tweets/TweetInputComponent'
@@ -16,12 +11,6 @@ type FeedState = 'For You' | 'Following'
 const Home = () => {
   const [feedState, setFeedState] = useState<FeedState>('For You')
   const [tweetArray, setTweetArray] = useState<ReturnThread[]>([])
-  const [textareaField, setTextareaField] = useState('')
-
-  const userTweets = useSelector(
-    (state: RootState) => state.tweet.personalTweets
-  )
-  const dispatch = useDispatch<AppDispatch>()
 
   const handleFeedRequest = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     const newState = e.currentTarget.textContent as FeedState
@@ -32,12 +21,6 @@ const Home = () => {
     )
     console.log(newState)
     setTweetArray(data)
-  }
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-
-    dispatch(createTweetThread({ content: textareaField }))
   }
 
   const activeFeedState =
@@ -70,16 +53,9 @@ const Home = () => {
         </div>
       </div>
       <div className='flex flex-col w-full '>
-        <form
-          onSubmit={handleSubmit}
-          className='border-b-[1px] border-slate-500 border-opacity-40'
-        >
-          <TweetInputComponent
-            componentType='Tweet'
-            state={textareaField}
-            setState={setTextareaField}
-          />
-        </form>
+        <div className='border-b-[1px] border-slate-500 border-opacity-40'>
+          <TweetInputComponent componentType='Tweet' />
+        </div>
 
         <main>
           {isData && (
@@ -87,10 +63,10 @@ const Home = () => {
               Tweets
             </div>
           )}
-          {userTweets &&
+          {/* {userTweets &&
             userTweets
               .map((item, index) => <div key={index}>{item.content}</div>)
-              .reverse()}
+              .reverse()} */}
 
           {feedState == 'Following' &&
             tweetArray &&

@@ -15,16 +15,21 @@ const {
   populateReplyThread,
   getAllUserReplies,
   favoriteThread,
+  upload,
 } = require('../controllers/tweets')
 
 // router.route('/getTweets').get()
 router.route('/').get(getAllUserReplies)
 router.route('/createTweet').post(createTweet)
 router.route('/getTweets').get(getTweets)
-router.route('/thread').post(postThread).get(populateThread)
+router
+  .route('/thread')
+  .post(authMiddleware, upload.single('media'), postThread)
+  .get(populateThread)
+
 router
   .route('/replythread/:tweetId')
-  .post(postReplyThread)
+  .post(authMiddleware, postReplyThread)
   .get(populateReplyThread)
 router.route('/getThreads').get(authMiddleware, getThreads)
 
