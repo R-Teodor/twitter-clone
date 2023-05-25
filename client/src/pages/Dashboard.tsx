@@ -8,50 +8,34 @@ import { useState } from 'react'
 import { EditProfile } from '../components/ProfileContent/EditProfile'
 
 const Dashboard = () => {
-  const id = useSelector((state: RootState) => state.auth.userTag)
+  const user = useSelector((state: RootState) => {
+    return {
+      userTag: state.auth.userTag,
+      name: state.auth.name,
+      avatar: '',
+    }
+  })
   const isOpenProfile = useSelector(
     (state: RootState) => state.layer.profileModal.isOpen
   )
   const loading = useSelector((state: RootState) => state.auth.loading)
   const dispatch = useDispatch<AppDispatch>()
-  const [openModal, setOpenModal] = useState<boolean>(true)
 
   useEffect(() => {
-    if (!id) {
+    if (!user.userTag) {
       dispatch(checkLoginState())
     }
-    // if (openModal) {
-    //   document.body.style.overflow = 'hidden'
-    // } else {
-    //   document.body.style.overflow = 'auto'
-    // }
-  }, [id, openModal])
+  }, [user.userTag])
 
   if (loading == 'loading')
     return <div className='text-5xl text-red-600'>Loading Time.....</div>
   return (
     <div className='text-white flex min-h-screen '>
-      {/* <Modal visible={openModal} setState={setOpenModal} /> */}
       <EditProfile isOpen={isOpenProfile} />
-      <SidebarHeader userTag={id} />
+      <SidebarHeader user={user} />
       <MainContent />
     </div>
   )
 }
-const Modal = ({
-  visible,
-  setState,
-}: {
-  visible: boolean
-  setState: React.Dispatch<boolean>
-}) => {
-  const modalClass = visible ? 'fixed h-full w-full bg-red-600 z-50' : 'hidden'
-  return (
-    <div className={modalClass}>
-      <h1 className='text-cyan-300 ' onClick={() => setState(false)}>
-        MODAL
-      </h1>
-    </div>
-  )
-}
+
 export default Dashboard

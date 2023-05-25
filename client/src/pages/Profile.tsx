@@ -1,4 +1,4 @@
-import { useParams, Outlet, NavLink, useNavigate } from 'react-router-dom'
+import { useParams, Outlet, NavLink, useNavigate, Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import {
   useGetProfileByUserTagQuery,
@@ -6,14 +6,20 @@ import {
 } from '../services/user'
 import { AppDispatch } from '../app/store'
 import { toggleProfileModal } from '../features/layers/layerSlice'
+import { HiArrowLeft } from 'react-icons/hi'
+import { BsCalendar3 } from 'react-icons/bs'
 
 const Profile = () => {
   const { userTag } = useParams()
   const navigate = useNavigate()
   const dispatch = useDispatch<AppDispatch>()
 
-  const { data, isFetching } = useGetProfileByUserTagQuery(userTag as string)
+  const { data, isFetching, error, isError } = useGetProfileByUserTagQuery(
+    userTag as string
+  )
   const [follow, result] = useHandleFollowProfileMutation()
+
+  console.log(error)
 
   const handleFollow = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -43,19 +49,23 @@ const Profile = () => {
   }
 
   if (isFetching) return <div>Leding......</div>
+  // console.log(new Date(`${data?.createdAt}`).toISOString())
 
+  // ######### Implement Error handling for users not found
+  if (isError) return <div>This Account does not exist</div>
   return (
     <>
       <div className='flex flex-col w-[600px]'>
-        <div>
-          <span
-            className='text-3xl mr-3 cursor-pointer'
-            onClick={() => navigate(-1)}
-          >
-            &#x2190;
+        <div className='flex pl-4 pb-1 items-center gap-6'>
+          <span className='mr-3 cursor-pointer' onClick={() => navigate(-1)}>
+            <HiArrowLeft size={18} />
           </span>
-          <span className='text-xl font-bold'>{data?.name}</span>
-          <p className='text-sm'>0 Tweets</p>
+          <div className='flex flex-col '>
+            <span className='text-xl font-bold text-[#F9F9F9] '>
+              {data?.name}
+            </span>
+            <p className='text-[13px] text-[#8b98a5]'>0 Tweets</p>
+          </div>
         </div>
         <div className='w-[598px] h-[199px] bg-gray-500'>
           <img
@@ -77,7 +87,7 @@ const Profile = () => {
           </div>
           <div className='flex justify-end pt-3 px-3'>
             <button
-              className='py-1 px-5 font-bold border-[1px] border-slate-500 border-opacity-40 rounded-full'
+              className='py-2 px-4 text-[15px] font-bold border-[1px] border-slate-500 border-opacity-40 rounded-full'
               onClick={(e) => handleFollow(e, data?._id)}
             >
               {data?.mainProfile
@@ -87,17 +97,39 @@ const Profile = () => {
                 : 'Follow'}
             </button>
           </div>
-          <div className='pt-10'>
-            <p>{data?.name}</p>
-            <p>{data?.userTag ? data.userTag : 'User Tag'}</p>
-            <p>{data?.createdAt}</p>
-            <p>
-              <span>{data?.followersCount} Followers</span>{' '}
-              <span>{data?.followingCount} Following</span>
+          <div className='flex flex-col pt-10 pb-4 px-4'>
+            <p className='text-xl font-bold'>{data?.name}</p>
+            <p className='text-[15px] text-[#8b98a5]'>
+              @{data?.userTag ? data.userTag : 'User Tag'}
             </p>
+
+            <div className='flex items-center gap-2 pt-3 text-[#8b98a5] text-sm'>
+              {' '}
+              <BsCalendar3 />
+              <div>Joined {new Date(`${data?.createdAt}`).toDateString()}</div>
+            </div>
+
+            <div className='pt-3 flex text-sm'>
+              <Link
+                to={`followers`}
+                state={{ userTag, name: data?.name }}
+                className='pr-3 cursor-pointer hover:underline'
+              >
+                {data?.followersCount}{' '}
+                <span className='text-[#8b98a5]'>Followers</span>{' '}
+              </Link>{' '}
+              <Link
+                to={'following'}
+                state={{ userTag, name: data?.name }}
+                className='cursor-pointer hover:underline'
+              >
+                {data?.followingCount}{' '}
+                <span className='text-[#8b98a5]'>Following</span>{' '}
+              </Link>
+            </div>
           </div>
 
-          <div className='flex flex-row w-full border-b-[1px] border-slate-500 border-opacity-40 text-lg text-[rgb(139,152,165)] '>
+          <div className='flex flex-row w-full border-b-[1px] border-slate-500 border-opacity-40 text-[15px] text-[rgb(139,152,165)] '>
             <NavLink to={''} className={'flex-1'} end>
               {({ isActive }) => (
                 <span

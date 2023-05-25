@@ -1,20 +1,24 @@
-import Dashboard from './pages/Dashboard'
-import Home from './pages/Home'
-
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
-import Explore from './pages/Explore'
-import Notifications from './pages/Notifications'
-import Messages from './pages/Messages'
-import Bookmarks from './pages/Bookmarks'
 import TwitterBlue from './components/TwitterBlue'
-import Profile from './pages/Profile'
-import Register from './pages/Register'
 import ProtectedRoute from './components/ProtectedRoute'
+import {
+  Bookmarks,
+  Dashboard,
+  Explore,
+  Home,
+  Messages,
+  Notifications,
+  Profile,
+  Register,
+} from './pages'
 import {
   PersonalTweets,
   Replies,
   Media,
   Likes,
+  ConnectedPeople,
+  Followers,
+  Following,
 } from './components/ProfileContent'
 import TweetStatus from './components/Tweets/TweetStatus'
 
@@ -83,6 +87,13 @@ function App() {
               <Route path='media' element={<Media />} />
               <Route path='likes' element={<Likes />} />
             </Route>
+            <Route element={<ConnectedPeople />}>
+              <Route path='/:userTag/followers' element={<Followers />} />
+              <Route path='/:userTag/following' element={<Following />} />
+            </Route>
+
+            {/*  */}
+
             <Route path='/:userTag/status/:tweetId' element={<TweetStatus />} />
           </Route>
           <Route path='/login' element={<Register />} />

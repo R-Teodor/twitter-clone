@@ -24,11 +24,15 @@ type StylingStyles = {
   className: string
 }
 type AppProps = {
-  userTag: string
+  user: {
+    userTag: string
+    name: string
+    avatar: string
+  }
 }
 
-const SidebarHeader = ({ userTag }: AppProps) => {
-  // const userTag = useSelector((state: RootState) => state.auth.userTag)
+const SidebarHeader = ({ user }: AppProps) => {
+  // const user = useSelector((state: RootState) => state.auth)
   // const dispatch = useDispatch<AppDispatch>()
 
   const activeLink: StylingStyles = {
@@ -44,7 +48,7 @@ const SidebarHeader = ({ userTag }: AppProps) => {
         <NavLink to='/' className='font-bold cursor-pointer p-3'>
           <RiTwitterFill size={34} />
         </NavLink>
-        {userTag && (
+        {user.userTag && (
           <NavLink
             to='/'
             className={({ isActive }: NavProps) =>
@@ -73,7 +77,7 @@ const SidebarHeader = ({ userTag }: AppProps) => {
           </div>
         </NavLink>
 
-        {userTag && (
+        {user.userTag && (
           <NavLink
             to={'notifications'}
             className={({ isActive }: NavProps) =>
@@ -88,7 +92,7 @@ const SidebarHeader = ({ userTag }: AppProps) => {
             </div>
           </NavLink>
         )}
-        {userTag && (
+        {user.userTag && (
           <NavLink
             to={'messages'}
             className={({ isActive }: NavProps) =>
@@ -103,7 +107,7 @@ const SidebarHeader = ({ userTag }: AppProps) => {
             </div>
           </NavLink>
         )}
-        {userTag && (
+        {user.userTag && (
           <NavLink
             to={'bookmarks'}
             className={({ isActive }: NavProps) =>
@@ -118,7 +122,7 @@ const SidebarHeader = ({ userTag }: AppProps) => {
             </div>
           </NavLink>
         )}
-        {userTag && (
+        {user.userTag && (
           <NavLink
             to={'twitterBl'}
             className={({ isActive }: NavProps) =>
@@ -133,9 +137,9 @@ const SidebarHeader = ({ userTag }: AppProps) => {
             </div>
           </NavLink>
         )}
-        {userTag && (
+        {user.userTag && (
           <NavLink
-            to={userTag ? `/${userTag}` : 'profile'}
+            to={user.userTag ? `/${user.userTag}` : 'profile'}
             className={({ isActive }: NavProps) =>
               isActive ? activeLink.className : nonActiveLink.className
             }
@@ -148,7 +152,7 @@ const SidebarHeader = ({ userTag }: AppProps) => {
             </div>
           </NavLink>
         )}
-        {userTag && (
+        {user.userTag && (
           <NavLink to={'#'} className={nonActiveLink.className}>
             <div className='flex gap-4 p-3 hover:bg-slate-700 rounded-full w-fit'>
               <span>
@@ -161,7 +165,7 @@ const SidebarHeader = ({ userTag }: AppProps) => {
 
         {/* <button className='font-bold cursor-pointer bg-[#1D9BF0]'>Tweet</button> */}
 
-        {userTag && (
+        {user.userTag && (
           <a
             href='#'
             className=' xl:w-[90%] xl:rounded-3xl xl:py-3 xl:block hidden bg-[#1D9BF0] text-center font-bold text-lg rounded-full'
@@ -169,7 +173,7 @@ const SidebarHeader = ({ userTag }: AppProps) => {
             Tweet
           </a>
         )}
-        {userTag && (
+        {user.userTag && (
           <a
             href='#'
             className='xl:hidden bg-[#1D9BF0]  text-lg rounded-full w-[56px] h-[56px] flex justify-center items-center'
@@ -179,6 +183,30 @@ const SidebarHeader = ({ userTag }: AppProps) => {
         )}
 
         <SelectUserComponent />
+
+        {user.userTag && (
+          <div
+            className='absolute bottom-4 right-3 left-3 p-3 rounded-full text-white flex items-center 
+          cursor-pointer hover:bg-slate-800/100 duration-100'
+          >
+            <div className='w-10 h-10 overflow-hidden rounded-full'>
+              <img
+                src='https://placehold.co/100x100'
+                alt=''
+                className='w-full h-full '
+              />
+            </div>
+            <div className='flex justify-between flex-1'>
+              <div className='flex flex-col pl-3'>
+                <span className='text-base  font-bold'>{user.name}</span>
+                <span className='text-sm text-[rgba(156,163,175,0.8)]'>
+                  @{user.userTag}
+                </span>
+              </div>
+              <span>...</span>
+            </div>
+          </div>
+        )}
       </nav>
     </header>
   )

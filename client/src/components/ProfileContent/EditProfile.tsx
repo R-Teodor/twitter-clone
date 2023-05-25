@@ -8,24 +8,34 @@ import axios from 'axios'
 const initialState = {
   bgImage: new File([''], 'filename'),
   avatar: new File([''], 'filename'),
-  Name: 'Jenkins',
-  Bio: 'A hardworking boi',
-  Location: '31 State Avenu, Los Angeles',
-  Website: '',
-  BirthDate: '',
+  name: 'Jenkins',
+  bio: 'A hardworking boi',
+  location: '31 State Avenu, Los Angeles',
+  website: '',
+  birthDate: '',
 }
 
 export const EditProfile = ({ isOpen }: { isOpen: boolean }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const user = useSelector((state: RootState) => state.auth)
+  const user = useSelector((state: RootState) => {
+    return {
+      name: state.auth.name,
+      bio: state.auth.bio,
+      location: state.auth.location,
+      website: state.auth.website,
+      birthDate: state.auth.birthDate,
+      bgImage: new File([''], 'filename'),
+      avatar: new File([''], 'filename'),
+    }
+  })
   console.log(user)
   const [profile, setProfile] = useState(initialState)
 
   const handleImgInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.id == 'backgroundImage' && e.target.files)
-      setProfile({ ...profile, bgImage: e.target.files[0] })
+      setProfile({ ...profile, bgImage: e.target.files[0]! })
     else if (e.target.id == 'avatarImage' && e.target.files)
-      setProfile({ ...profile, avatar: e.target.files[0] })
+      setProfile({ ...profile, avatar: e.target.files[0]! })
   }
   if (profile.avatar.size > 0) console.log('exists')
 
@@ -37,7 +47,7 @@ export const EditProfile = ({ isOpen }: { isOpen: boolean }) => {
     // if (profile.avatar) dataForm.append('avatar', profile.avatar)
     // if (profile.bgImage) dataForm.append('bgImage', profile.bgImage)
 
-    Object.keys(profile).forEach((key) =>
+    Object.keys(user).forEach((key) =>
       dataForm.append(key, profile[key as keyof typeof profile])
     )
     for (var pair of dataForm.entries()) {
@@ -158,10 +168,10 @@ export const EditProfile = ({ isOpen }: { isOpen: boolean }) => {
                   <input
                     type='text'
                     placeholder='Name'
-                    value={profile.Name}
+                    value={profile.name}
                     className='w-full py-4 px-6 bg-transparent text-gray-300 outline-none border-2 border-gray-700 '
                     onChange={(e) =>
-                      setProfile({ ...profile, Name: e.target.value })
+                      setProfile({ ...profile, name: e.target.value })
                     }
                   />
                 </div>
@@ -173,13 +183,13 @@ export const EditProfile = ({ isOpen }: { isOpen: boolean }) => {
                     rows={4}
                     maxLength={160}
                     className='w-full pt-6 px-6 bg-transparent text-gray-300 outline-none border-2 border-gray-700 '
-                    value={profile.Bio}
+                    value={profile.bio}
                     onChange={(e) =>
-                      setProfile({ ...profile, Bio: e.target.value })
+                      setProfile({ ...profile, bio: e.target.value })
                     }
                   />
                   <label htmlFor='bio' className='absolute top-4 right-8'>
-                    {profile.Bio.length}/160
+                    {profile.bio?.length}/160
                   </label>
                 </div>
                 <div className='px-5 py-3'>
@@ -187,9 +197,9 @@ export const EditProfile = ({ isOpen }: { isOpen: boolean }) => {
                     type='text'
                     placeholder='Location'
                     className='w-full py-4 px-6 bg-transparent text-gray-300 outline-none border-2 border-gray-700 '
-                    value={profile.Location}
+                    value={profile.location}
                     onChange={(e) =>
-                      setProfile({ ...profile, Location: e.target.value })
+                      setProfile({ ...profile, location: e.target.value })
                     }
                   />
                 </div>
@@ -198,9 +208,9 @@ export const EditProfile = ({ isOpen }: { isOpen: boolean }) => {
                     type='text'
                     placeholder='Website'
                     className='w-full py-4 px-6 bg-transparent text-gray-300 outline-none border-2 border-gray-700 '
-                    value={profile.Website}
+                    value={profile.website}
                     onChange={(e) =>
-                      setProfile({ ...profile, Website: e.target.value })
+                      setProfile({ ...profile, website: e.target.value })
                     }
                   />
                 </div>

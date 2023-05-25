@@ -197,6 +197,7 @@ const getUserProfile = async (req, res) => {
     { following: { $slice: -5 }, followers: { $slice: -5 } }
   ).select('-password -__v -updatedAt')
 
+  if (!user) throw new BadRequest('Account does not exist.')
   // ##### Should find a way to guard from trying to access payload.userId
   let mainUser = false
   if (user._id == payload?.userId) mainUser = true
