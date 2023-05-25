@@ -6,7 +6,7 @@ import {
   FaChartBar,
   FaDownload,
 } from 'react-icons/fa'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import type { ReturnThread } from '../../features/tweets/tweetSlice'
 import axios from 'axios'
 
@@ -19,6 +19,7 @@ type ClickEventType =
   | 'retweets'
   | 'views'
   | 'download'
+  | 'avatar'
 
 const TweetComponents = ({ tweet }: TweetComponentProps) => {
   const navigate = useNavigate()
@@ -51,15 +52,25 @@ const TweetComponents = ({ tweet }: TweetComponentProps) => {
     // console.log('This is the current target', e.currentTarget.id)
   }
 
+  const handleProfileNav = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    e.stopPropagation()
+    navigate(`/${tweet.author.userTag}`)
+  }
+
   if (tweet && Object.keys(tweet).length == 0) return <div>No Tweets</div>
   return (
     <div onClick={handleNavigation} className='cursor-pointer'>
       <div className='flex flex-row px-5 py-3 hover:bg-[rgba(247,249,249,0.03)] duration-150 border-b-[1px] border-slate-500 border-opacity-40'>
-        <div className='w-12 h-12 overflow-hidden rounded-full flex-shrink-0'>
+        <div
+          className='w-12 h-12 overflow-hidden rounded-full flex-shrink-0 hover:brightness-75 duration-150'
+          onClick={handleProfileNav}
+        >
           <img
             src={tweet.author.avatarURL}
             alt=''
-            className='w-full h-full object-cover object-center'
+            className='w-full h-full object-cover object-center '
           />
         </div>
 
@@ -67,7 +78,12 @@ const TweetComponents = ({ tweet }: TweetComponentProps) => {
           <div className='flex flex-row w-full justify-between'>
             <div className='flex flex-row gap-1.5'>
               <div className='flex flex-row items-center gap-x-1'>
-                <span className='font-bold text-base'>{tweet.author.name}</span>
+                <span
+                  className='font-bold text-base hover:underline'
+                  onClick={handleProfileNav}
+                >
+                  {tweet.author.name}
+                </span>
                 <span className='text-blue-500'>
                   {tweet._id ? <MdVerified size={20} /> : ''}
                 </span>
@@ -82,6 +98,7 @@ const TweetComponents = ({ tweet }: TweetComponentProps) => {
           </div>
 
           {tweet.content}
+
           <div className=''>
             {tweet.mediaUrl && (
               <img

@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import axios from 'axios'
 import type { AxiosError } from 'axios'
+import { Thread } from '../tweets/tweetSlice'
 
 // THIS IS ALMOST THE FINAL STATE OF USER MODEL
 // ############## SHOULD TRY TO IMPLEMENT AN INTERFACE OR A TYPE AND USE IT FOR THE WHOLE APPLICATION
@@ -22,6 +23,32 @@ export interface User {
   location?: string
   website?: string
   createdAt: string
+}
+
+export interface UserProfile {
+  _id: string
+  name: string
+  // Should remove email from the backend
+  email: string
+  phone?: number | null
+  userTag: string
+  following: User[] | string[]
+  followingCount: number | null
+  followers: User[] | string[]
+  followersCount: number | null
+  birthDate: string
+  bio?: string
+  location?: string
+  website?: string
+  createdAt: string
+  avatarURL: string
+  bgURL: string
+  isFollowing: boolean
+  mainProfile: boolean
+  media: Thread[]
+  tweetCount: number
+  verified: boolean
+  likes: string[]
 }
 
 export interface NetworkState {

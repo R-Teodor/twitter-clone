@@ -221,34 +221,47 @@ const getUserProfile = async (req, res) => {
   }
 
   res.status(200).json({
-    user: { ...returnedUser, isFollowing: verified, mainProfile: mainUser },
+    ...returnedUser,
+    isFollowing: verified,
+    mainProfile: mainUser,
   })
 }
 
 const followUser = async (req, res) => {
   const userId = req.userId
-  const { followId } = req.body
+  const { followId, actionType } = req.body
 
   if (!userId) throw new Unauthorized('Need to log In')
   if (!followId) throw new BadRequest('Need an id to follow')
 
-  const followingUpdate = await User.findOneAndUpdate(
-    { _id: userId },
-    { $addToSet: { following: followId } },
-    { new: true }
-  )
-  const followerUpdate = await User.findOneAndUpdate(
-    { _id: followId },
-    { $addToSet: { followers: userId } },
-    { new: true }
-  )
+  if (actionType == 'follow') {
+    const followingUpdate = await User.findOneAndUpdate(
+      { _id: userId },
+      { $addToSet: { following: followId } },
+      { new: true }
+    )
+    const followerUpdate = await User.findOneAndUpdate(
+      { _id: followId },
+      { $addToSet: { followers: userId } },
+      { new: true }
+    )
+  }
 
-  console.log(
-    'This is the updatedArray with findOneNadUpdate ',
-    followingUpdate
-  )
+  if (actionType == 'unfollow') {
+    const followingUpdate = await User.findOneAndUpdate(
+      { _id: userId },
+      { $pull: { following: followId } },
+      { new: true }
+    )
+    const followerUpdate = await User.findOneAndUpdate(
+      { _id: followId },
+      { $pull: { followers: userId } },
+      { new: true }
+    )
+  }
 
-  res.status(200).json({ followingUpdate, followerUpdate })
+  // res.status(200).json({ followingUpdate, followerUpdate })
+  res.status(200).json({ msg: 'ok' })
 }
 
 const getAllUserLikes = async (req, res) => {
@@ -271,29 +284,34 @@ const getAllUserLikes = async (req, res) => {
 }
 
 const updateProfile = async function (req, res, next) {
-  const avatarFile = req.files['avatar'][0]
-  const bgFile = req.files['bgImage'][0]
+  let avatarFile = null
+  if (req.files && req.files[`avatar`]) {
+    avatarFile = req.files['avatar'][0]
+  }
+  let bgFile = null
+  if (req.files && req.files[`bgImage`]) {
+    bgFile = req.files['bgImage'][0]
+  }
   const { Name, Location, Bio, Website, BirthDate } = req.body
+
+  // console.log(avatarFile)
+  // console.log(bgFile)
 
   const userId = req?.userId
 
   const user = await User.findById(userId).select('-password')
 
-  const avatarPath = `http://localhost:4000/${avatarFile.fieldname}/${avatarFile.filename}`
-  const bgPath = `http://localhost:4000/${bgFile.fieldname}/${bgFile.filename}`
+  const avatarPath = `http://localhost:4000/${avatarFile?.fieldname}/${avatarFile?.filename}`
+  const bgPath = `http://localhost:4000/${bgFile?.fieldname}/${bgFile?.filename}`
 
-  user.avatarURL = avatarPath
-  user.bgURL = bgPath
+  if (avatarFile) user.avatarURL = avatarPath
+  if (bgFile) user.bgURL = bgPath
   user.name = Name
   user.bio = Bio
   user.location = Location
   if (Website) user.website = Website
   if (BirthDate) user.birthDate = BirthDate
   await user.save()
-  // res.json({
-  //   avatarPath:
-  // })
-  console.log(req.body)
 
   res.json({
     avatarPath,

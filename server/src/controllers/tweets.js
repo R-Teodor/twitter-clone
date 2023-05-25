@@ -15,7 +15,13 @@ const storage = multer.diskStorage({
     cb(null, fileName)
   },
 })
-const upload = multer({ storage: storage })
+const upload = multer({
+  storage: storage,
+  fileFilter: function (req, file, cb) {
+    console.log(file)
+    cb(null, true)
+  },
+})
 
 const createTweet = async (req, res) => {
   const { author, content, replied } = req.body
@@ -42,10 +48,14 @@ const getTweets = async (req, res) => {
 // ###############
 
 const postThread = async (req, res) => {
+  let mediaUrl = ''
+  if (req.file) {
+    mediaUrl = `http://localhost:4000/media/${req.file.filename}`
+  }
   const thread = {
     ...req.body,
     author: req.userId,
-    mediaUrl: `http://localhost:4000/media/${req.file.filename}`,
+    mediaUrl: mediaUrl,
   }
 
   const createdThread = await Thread.create(thread)
@@ -62,11 +72,13 @@ const getThreads = async (req, res) => {
 
 const getTweetsById = async (req, res) => {
   const id = req.params.userId
-  if (!id) throw new BadRequest('Aiii')
+  if (!id) throw new BadRequest('No Id')
 
   const threads = await Thread.find({ author: id })
     .select('-__v')
     .populate('author', 'name userTag avatarURL')
+    .limit(20)
+    .sort({ createdAt: -1 })
     .exec()
 
   res.json(threads)
@@ -78,9 +90,10 @@ const getFollowingThreads = async (req, res) => {
   const followedUsersTweets = await Thread.find({
     author: { $in: followedUsers.following },
   })
-    .limit(10)
+    // .limit(10)
     .select('-__v -updatedAt')
     .populate('author', 'name userTag avatarURL')
+    .sort({ createdAt: -1 })
     .exec()
 
   res.json(followedUsersTweets)
@@ -157,6 +170,24 @@ const favoriteThread = async (req, res) => {
     { new: true }
   )
 
+  // const foundUser2 = await User.findByIdAndUpdate(
+  //   userId,
+  //   {
+  //     $cond: {
+  //       if: {
+  //         $in: [tweetId, '$likes'],
+  //         then: { $pull: { likes: tweetId } },
+  //         else: {
+  //           $addToSet: {
+  //             likes: tweetId,
+  //           },
+  //         },
+  //       },
+  //     },
+  //   },
+  //   { new: true }
+  // )
+
   if (!foundUser) return res.json({ data: 'Something Went Wrong' })
 
   const setLikesOnThread = await Thread.findByIdAndUpdate(
@@ -170,6 +201,7 @@ const favoriteThread = async (req, res) => {
   )
   if (!setLikesOnThread) return res.json({ data: 'Something Went Wrong' })
 
+  // console.log(foundUser2)
   res.json({ tweetId, userId })
 }
 

@@ -1,5 +1,5 @@
-import { useDispatch } from 'react-redux'
-import { AppDispatch } from '../../app/store'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from '../../app/store'
 import { toggleProfileModal } from '../../features/layers/layerSlice'
 import { useState, useEffect } from 'react'
 import { MdOutlineAddAPhoto } from 'react-icons/md'
@@ -17,6 +17,8 @@ const initialState = {
 
 export const EditProfile = ({ isOpen }: { isOpen: boolean }) => {
   const dispatch = useDispatch<AppDispatch>()
+  const user = useSelector((state: RootState) => state.auth)
+  console.log(user)
   const [profile, setProfile] = useState(initialState)
 
   const handleImgInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,6 +27,7 @@ export const EditProfile = ({ isOpen }: { isOpen: boolean }) => {
     else if (e.target.id == 'avatarImage' && e.target.files)
       setProfile({ ...profile, avatar: e.target.files[0] })
   }
+  if (profile.avatar.size > 0) console.log('exists')
 
   const handleMultiform = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
