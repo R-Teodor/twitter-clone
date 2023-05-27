@@ -8,6 +8,7 @@ const {
   getUserProfile,
   getAllUserLikes,
   updateProfile,
+  getConnectedPeople,
 } = require('../controllers/user')
 const { upload } = require('../server')
 
@@ -21,6 +22,7 @@ router.route('/follow').post(authMiddleware, followUser)
 router.route('/profile').post(getUserProfile)
 router.route('/edit').post(authMiddleware, cbUpload, updateProfile)
 router.route('/likes').get(authMiddleware, getAllUserLikes)
+router.route('/connected/:userTag').get(getConnectedPeople)
 
 router.route('/:userTag').get(getUserProfile)
 

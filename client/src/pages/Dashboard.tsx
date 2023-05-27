@@ -31,7 +31,7 @@ const Dashboard = () => {
     return <div className='text-5xl text-red-600'>Loading Time.....</div>
   return (
     <div className='text-white flex min-h-screen '>
-      <EditProfile isOpen={isOpenProfile} />
+      {isOpenProfile && <EditProfile isOpen={isOpenProfile} />}
       <SidebarHeader user={user} />
       <MainContent />
     </div>

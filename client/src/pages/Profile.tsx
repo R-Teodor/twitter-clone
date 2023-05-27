@@ -19,8 +19,6 @@ const Profile = () => {
   )
   const [follow, result] = useHandleFollowProfileMutation()
 
-  console.log(error)
-
   const handleFollow = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     followId: string | undefined

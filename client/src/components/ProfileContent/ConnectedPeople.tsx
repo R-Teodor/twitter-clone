@@ -9,7 +9,7 @@ const Followers = () => {
   const { data, isFetching, error } = useGetProfileByUserTagQuery(
     location.pathname.split('/')[1]
   )
-
+  console.log(data)
   return (
     <div className='flex flex-col'>
       <div className='flex flex-col border-b-[1px] border-slate-500 border-opacity-40'>
@@ -24,27 +24,35 @@ const Followers = () => {
             <span className='text-[13px] text-[#8b98a5]'>@{data?.userTag}</span>
           </div>
         </div>
-        <div className='flex'>
+        <div className='flex text-[#8b98a5]'>
           <NavLink
             to={`${data?.userTag}/followers`}
-            className='flex items-center justify-center flex-1
-            py-4 hover:bg-[rgba(247,249,249,0.09)]
-            '
+            className={({
+              isActive,
+            }) => `flex items-center justify-center flex-1
+            py-4 hover:bg-[rgba(247,249,249,0.09)] ${
+              isActive ? 'font-bold text-[#F9F9F9]' : ''
+            }
+            `}
           >
             <div className='text-[15px]'>Followers</div>
           </NavLink>
           <NavLink
             to={`${data?.userTag}/following`}
-            className='flex items-center justify-center flex-1
-            py-4 hover:bg-[rgba(247,249,249,0.09)]
-            '
+            className={({
+              isActive,
+            }) => `flex items-center justify-center flex-1
+            py-4 hover:bg-[rgba(247,249,249,0.09)] ${
+              isActive ? 'font-bold text-[#F9F9F9]' : ''
+            }
+            `}
           >
             <div className='text-[15px]'>Following</div>
           </NavLink>
         </div>
       </div>
-      <div>
-        <Outlet />
+      <div className=''>
+        <Outlet context={{ userTag: location.pathname.split('/')[1] }} />
       </div>
     </div>
   )

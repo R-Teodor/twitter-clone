@@ -320,6 +320,19 @@ const updateProfile = async function (req, res, next) {
   })
 }
 
+const getConnectedPeople = async (req, res) => {
+  const userTag = req.params.userTag
+
+  const user = await User.findOne({ userTag })
+    .select('followers following')
+    .populate('following followers', 'name userTag avatarURL bio')
+    .exec()
+
+  if (!user) throw new BadRequest('User Does not exist')
+
+  res.status(200).json(user)
+}
+
 module.exports = {
   searchAsTyped,
   testIndex,
@@ -327,4 +340,5 @@ module.exports = {
   getUserProfile,
   getAllUserLikes,
   updateProfile,
+  getConnectedPeople,
 }
