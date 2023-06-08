@@ -14,6 +14,7 @@ const {
   getAllUserReplies,
   favoriteThread,
   upload,
+  getFeed,
 } = require('../controllers/tweets')
 
 router.route('/').get(getAllUserReplies)
@@ -30,6 +31,8 @@ router
 // router.route('/getThreads').get(authMiddleware, getThreads)
 
 router.route('/following').get(authMiddleware, getFollowingThreads)
+router.route('/feed').get(getFeed).post(getFeed)
+
 router.route('/:userId').get(getTweetsById)
 
 router.route('/favorite').post(authMiddleware, favoriteThread)

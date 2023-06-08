@@ -21,11 +21,13 @@ import {
   Following,
 } from './components/ProfileContent'
 import TweetStatus from './components/Tweets/TweetStatus'
+import ScrollToTop from './components/ScrollToTop'
 
 function App() {
   return (
     <>
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           <Route path='/' element={<Dashboard />}>
             <Route

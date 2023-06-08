@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, ScrollRestoration } from 'react-router-dom'
 import TweetComponents from '../components/Tweets/TweetComponents'
 import axios from 'axios'
 import type { ReturnThread } from '../features/tweets/tweetSlice'

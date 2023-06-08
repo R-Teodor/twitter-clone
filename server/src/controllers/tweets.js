@@ -205,6 +205,21 @@ const favoriteThread = async (req, res) => {
   res.json({ tweetId, userId })
 }
 
+// ################  Handle Explore Content Tweets (Feed)
+
+const getFeed = async (req, res) => {
+  const { skip } = req.body
+
+  const threads = await Thread.find()
+    .skip(skip)
+    .limit(10)
+    .sort({ createdAt: -1 })
+    .populate('author', 'name userTag avatarURL')
+    .exec()
+
+  res.status(200).json(threads)
+}
+
 module.exports = {
   createTweet,
   getTweets,
@@ -218,4 +233,5 @@ module.exports = {
   getAllUserReplies,
   favoriteThread,
   upload,
+  getFeed,
 }
