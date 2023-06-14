@@ -21,6 +21,7 @@ function StatusTest() {
   const [comments, setComments] = useState<any[] | undefined>([])
   const user = useSelector((state: RootState) => state.auth)
 
+  console.log(state)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -53,7 +54,11 @@ function StatusTest() {
         <div className='flex justify-center gap-3'>
           <div className='w-11 h-11 overflow-hidden rounded-full'>
             <img
-              src='https://placehold.co/600x400'
+              src={
+                state?.author.avatarURL
+                  ? state?.author.avatarURL
+                  : 'https://placehold.co/600x400'
+              }
               alt=''
               className='object-cover w-full h-full'
             />

@@ -25,8 +25,12 @@ const layerSlice = createSlice({
       if (action.payload == 'Open') state.profileModal.isOpen = true
       if (action.payload == 'Close') state.profileModal.isOpen = false
     },
+    toggleLoginModal: (state, action: PayloadAction<'Open' | 'Close'>) => {
+      if (action.payload == 'Open') state.loginModal.isOpen = true
+      if (action.payload == 'Close') state.loginModal.isOpen = false
+    },
   },
 })
 
-export const { toggleProfileModal } = layerSlice.actions
+export const { toggleProfileModal, toggleLoginModal } = layerSlice.actions
 export default layerSlice.reducer

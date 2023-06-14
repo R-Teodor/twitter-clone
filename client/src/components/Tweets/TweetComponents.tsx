@@ -6,12 +6,16 @@ import {
   FaChartBar,
   FaDownload,
 } from 'react-icons/fa'
-import { Link, useNavigate, ScrollRestoration } from 'react-router-dom'
 import type { ReturnThread } from '../../features/tweets/tweetSlice'
+import type { AppDispatch } from '../../app/store'
+import { Link, useNavigate, ScrollRestoration } from 'react-router-dom'
 import axios from 'axios'
+import { useDispatch } from 'react-redux'
+import { toggleLoginModal } from '../../features/layers/layerSlice'
 
 export type TweetComponentProps = {
   tweet: ReturnThread
+  auth?: boolean
 }
 type ClickEventType =
   | 'comments'
@@ -21,8 +25,9 @@ type ClickEventType =
   | 'download'
   | 'avatar'
 
-const TweetComponents = ({ tweet }: TweetComponentProps) => {
+const TweetComponents = ({ tweet, auth }: TweetComponentProps) => {
   const navigate = useNavigate()
+  const dispatch = useDispatch<AppDispatch>()
 
   const handleNavigation = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -38,6 +43,9 @@ const TweetComponents = ({ tweet }: TweetComponentProps) => {
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
     e.stopPropagation()
+    if (auth == false) {
+      return dispatch(toggleLoginModal('Open'))
+    }
     const handler = e.currentTarget.id as ClickEventType
     if (handler == 'favorite') {
       const { data } = await axios.post(
